@@ -29,6 +29,15 @@ See src/index.d.ts
 ```ts
 interface GithubHelper {
   repoURL: string;
+  getRepoDetails(): Promise<{
+    owner: string,
+    repo: string,
+    fullName: string,
+    private: boolean,
+    description: string,
+    defaultBranch: string,
+    url: string
+  }>;
   getDefaultBranch(): string;
   // Read an option from Github Actions' workflow args
   getInput(name: string, required?: boolean): string;
