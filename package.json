@@ -1,7 +1,7 @@
 {
-  "name": "prismarine-template",
-  "version": "1.0.0",
-  "description": "A template repository to make it easy to create new prismarine repo",
+  "name": "gh-helpers",
+  "version": "0.0.1",
+  "description": "Various helper methods for Github Actions and API automation",
   "main": "src/index.js",
   "scripts": {
     "test": "mocha --reporter spec --exit",
@@ -11,18 +11,28 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/extremeheat/prismarine-template.git"
+    "url": "git+https://github.com/extremeheat/gh-helpers.git"
   },
   "keywords": [],
   "author": "extremeheat",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/extremeheat/prismarine-template/issues"
+    "url": "https://github.com/extremeheat/gh-helpers/issues"
   },
-  "homepage": "https://github.com/extremeheat/prismarine-template#readme",
+  "homepage": "https://github.com/extremeheat/gh-helpers#readme",
   "devDependencies": {
-    "prismarine-template": "file:.",
-    "standard": "^17.0.0",
-    "mocha": "^10.0.0"
+    "gh-helpers": "file:.",
+    "mocha": "^10.0.0",
+    "standard": "^17.0.0"
+  },
+  "dependencies": {
+    "@actions/core": "^1.10.1",
+    "@actions/github": "^6.0.0"
+  },
+  "standard": {
+    "ignore": [
+      "dist/",
+      "src/index.js"
+    ]
   }
 }

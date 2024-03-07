@@ -1,8 +1,12 @@
 /* eslint-env mocha */
-const lib = require('prismarine-template')
+globalThis.isMocha = true
+const lib = require('gh-helpers')
+const assert = require('assert')
 
-describe('basic', () => {
-  it('test', () => {
-    console.log('it works~')
+describe('basic usage', () => {
+  it('test import', () => {
+    const defBranch = lib.getDefaultBranch()
+    console.log('Default branch', defBranch)
+    assert(defBranch === 'main' || defBranch === 'master')
   })
 })
