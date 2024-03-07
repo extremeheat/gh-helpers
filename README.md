@@ -18,7 +18,7 @@ const github = require('gh-helpers')()
 Outside example over API for repo at PrismarineJS/vec3, make sure to specify your PAT with perms to the repo
 ```js
 const github = require('gh-helpers')({
-  repo: { org: 'PrismarineJS', name: 'vec3' }
+  repo: { owner: 'PrismarineJS', name: 'vec3' }
 }, GITHUB_PAT)
 ```
 

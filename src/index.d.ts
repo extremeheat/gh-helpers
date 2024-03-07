@@ -94,6 +94,6 @@ interface GithubHelper {
 function loader(): GithubHelper
 // If the module is instantiated outside Actions over API, you need to supply
 // repo context + a Github personal access token (PAT)
-function loader (context: { repo: { org: string, name: string } }, githubToken?: string): GithubHelper
+function loader (context: { repo: { owner: string, name: string } }, githubToken?: string): GithubHelper
 
 export default loader

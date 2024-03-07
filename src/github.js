@@ -76,7 +76,7 @@ function mod (githubContext, githubToken) {
   async function close (id, reason) {
     if (reason) await octokit.rest.issues.createComment({ ...context.repo, issue_number: id, body: reason })
     const issue = await octokit.rest.issues.update({ ...context.repo, issue_number: id, state: 'closed' })
-    console.log(`Closed issue ${issue.data.title}#${issue.data.number}: ${issue.data.html_url}`)
+    debug(`Closed issue ${issue.data.title}#${issue.data.number}: ${issue.data.html_url}`)
   }
 
   async function comment (id, body) {
@@ -88,10 +88,13 @@ function mod (githubContext, githubToken) {
     if (repoDetails) return repoDetails
     const { data } = await octokit.rest.repos.get({ ...context.repo })
     repoDetails = {
-      defaultBranch: data.default_branch,
       owner: data.owner.login,
       repo: data.name,
-      description: data.description
+      fullName: data.full_name,
+      private: data.private,
+      description: data.description,
+      defaultBranch: data.default_branch,
+      url: data.html_url
     }
     return repoDetails
   }
@@ -101,12 +104,13 @@ function mod (githubContext, githubToken) {
     if (branchFromContext) {
       return branchFromContext
     }
-    return await getRepoDetails().defaultBranch
+    const details = await getRepoDetails()
+    return details.defaultBranch
   }
 
   if (context.payload) {
     // This was triggered by Github Actions
-    console.log('Default branch is', getDefaultBranch(), 'current author is', currentAuthor)
+    getDefaultBranch().then(branch => debug('Default branch is', branch, 'current author is', currentAuthor))
   }
 
   async function findPullRequests ({
@@ -153,7 +157,7 @@ function mod (githubContext, githubToken) {
       title,
       body
     })
-    console.log(`Updated pull ${pull.data.title}#${pull.data.number}: ${pull.data.html_url}`)
+    debug(`Updated pull ${pull.data.title}#${pull.data.number}: ${pull.data.html_url}`)
   }
 
   async function getComments (id) {
@@ -273,6 +277,7 @@ function mod (githubContext, githubToken) {
   const repoURL = context.payload?.repository.html_url ?? `https://github.com/${context.repo.owner}/${context.repo.repo}`
 
   return {
+    getRepoDetails,
     getDefaultBranch,
     getInput,
     getIssueStatus,
