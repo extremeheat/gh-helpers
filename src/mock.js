@@ -35,6 +35,12 @@ const getRecentCommitsInRepo = () => [
 ]
 module.exports = () => ({
   mock: true,
+  getRepoDetails: () => ({
+    defaultBranch: 'main',
+    owner: 'extremeheat',
+    repo: 'LXL',
+    description: 'langxlang, a Node.js library to integrate LLMs into programming languages'
+  }),
   getDefaultBranch: () => 'master',
   getInput: noop,
 

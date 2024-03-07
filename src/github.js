@@ -19,13 +19,13 @@ function mod (githubContext, githubToken) {
   const isPAT = !token.startsWith('ghs_')
   const currentAuthor = isPAT ? '@me' : 'app/github-actions'
   const octokit = github.getOctokit(token)
-  const repo = context.repo.owner + '/' + context.repo.repo
+  const fullName = context.repo.fullName || (context.repo.owner + '/' + context.repo.repo)
 
   const getInput = (name, required = false) => core.getInput(name, { required })
 
   async function findIssues ({ title, number, author = currentAuthor }) {
     // https://docs.github.com/en/rest/reference/search#search-issues-and-pull-requests
-    let q = `is:issue repo:${repo}`
+    let q = `is:issue repo:${fullName}`
     if (title) q += ` in:title ${title}`
     if (number) q += ` number:${number}`
     if (author) q += ` author:${author}`
