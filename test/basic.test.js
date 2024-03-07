@@ -5,7 +5,8 @@ const assert = require('assert')
 
 describe('basic usage', () => {
   it('test import', () => {
-    const defBranch = lib.getDefaultBranch()
+    const github = lib()
+    const defBranch = github.getDefaultBranch()
     console.log('Default branch', defBranch)
     assert(defBranch === 'main' || defBranch === 'master')
   })
