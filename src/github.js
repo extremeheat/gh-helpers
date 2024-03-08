@@ -1,14 +1,15 @@
 // const { Octokit } = require('@octokit/rest') // https://github.com/octokit/rest.js
 const github = require('@actions/github')
 const core = require('@actions/core')
+// const runningOverActions = !!process.env.GITHUB_ACTIONS
 
 function mod (githubContext, githubToken) {
-  const debug = github.context
+  const debug = github.context?.action
     ? console.log
-    : (process.env.DEBUG ? console.debug.bind(null, '[GAH]') : null)
+    : (process.env.DEBUG ? console.debug.bind(null, '[GAH]') : () => {})
 
   const context = githubContext || github.context
-  if (!context) throw new Error('Invalid arguments')
+  if (!context?.repo) throw new Error('Invalid arguments')
   const token = githubToken || core.getInput('token') || process.env.GITHUB_TOKEN
   if (!token) {
     console.error('No Github token was specified, please see the documentation for correct Action usage.')
@@ -19,6 +20,7 @@ function mod (githubContext, githubToken) {
   const isPAT = !token.startsWith('ghs_')
   const currentAuthor = isPAT ? '@me' : 'app/github-actions'
   const octokit = github.getOctokit(token)
+  // Full context object: https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts
   const fullName = context.repo.fullName || (context.repo.owner + '/' + context.repo.repo)
 
   const getInput = (name, required = false) => core.getInput(name, { required })
@@ -36,6 +38,7 @@ function mod (githubContext, githubToken) {
     return results.map(issue => ({
       state: issue.state,
       id: issue.number,
+      number: issue.number,
       title: issue.title,
       url: issue.html_url,
       author: issue.user.login,
@@ -51,8 +54,7 @@ function mod (githubContext, githubToken) {
     return {
       ...existingIssue,
       open: existingIssue.state === 'open',
-      closed: existingIssue.state === 'closed',
-      id: existingIssue.number
+      closed: existingIssue.state === 'closed'
     }
   }
 
@@ -130,6 +132,7 @@ function mod (githubContext, githubToken) {
     return results.map(issue => ({
       state: issue.state,
       id: issue.number,
+      number: issue.number,
       title: issue.title,
       url: issue.html_url,
       author: issue.user.login,
@@ -224,6 +227,25 @@ function mod (githubContext, githubToken) {
     })
   }
 
+  async function getDiffForPR (id) {
+    const { data } = await octokit.rest.pulls.get({
+      ...context.repo,
+      pull_number: id
+    })
+    const diff = await octokit.rest.pulls.get({
+      ...context.repo,
+      pull_number: id,
+      mediaType: {
+        format: 'diff'
+      }
+    })
+    return {
+      diff: diff.data,
+      title: data.title,
+      number: data.number
+    }
+  }
+
   async function getRecentCommitsInRepo (max = 100) {
     const { data } = await octokit.rest.repos.listCommits({
       ...context.repo,
@@ -287,6 +309,7 @@ function mod (githubContext, githubToken) {
     findPullRequests,
     findPullRequest,
     getPullRequest,
+    getDiffForPR,
 
     updateIssue,
     createIssue,

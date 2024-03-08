@@ -11,7 +11,7 @@ type Comment = {
   role: string
 }
 
-type PullRequest = {
+type FullPRData = {
   canMaintainerModify: boolean;
   targetBranch: string;
   targetRepo: string;
@@ -22,6 +22,8 @@ type PullRequest = {
   body?: string;
   state?: string;
   number?: number;
+  author: string;
+  created: string;
   url?: string;
   comments?: Comment[]
 };
@@ -48,9 +50,10 @@ type UpdatedPRPayload = {
 };
 
 type PRLookupOpt = { titleIncludes: string, author?: string, status?: string }
-type PRDetail = {
+type IssuePRDetail = {
   state: string,
   id: number,
+  number: number,
   title: string,
   url: string,
   author: string,
@@ -73,18 +76,18 @@ interface GithubHelper {
   // Read an option from Github Actions' workflow args
   getInput(name: string, required?: boolean): string;
     
-  findIssues (options: PRLookupOpt): Promise<PRDetail[]>
-  getIssueStatus(options: PRLookupOpt): Promise<PRDetail & IssueStatus>;
+  findIssues (options: PRLookupOpt): Promise<IssuePRDetail[]>
+  getIssueStatus(options: PRLookupOpt): Promise<IssuePRDetail & IssueStatus>;
   
   updateIssue(id: number, payload: { body: string }): Promise<void>;
   createIssue(payload: object): Promise<void>;
   
-  findPullRequests(options: PRLookupOpt): Promise<PRDetail[]>;
-  findPullRequest(options: PRLookupOpt): Promise<PRDetail>;
+  findPullRequests(options: PRLookupOpt): Promise<IssuePRDetail[]>;
+  findPullRequest(options: PRLookupOpt): Promise<IssuePRDetail>;
   
   getComments(id: number): Promise<Comments[]>;
   
-  getPullRequest(id: number, includeComments?: boolean): Promise<PullRequest>;
+  getPullRequest(id: number, includeComments?: boolean): Promise<FullPRData>;
   updatePull(id: number, payload: { title?: string; body?: string }): Promise<void>;
   createPullRequest(title: string, body: string, fromBranch: string, intoBranch?: string): Promise<void>;
   
@@ -93,6 +96,8 @@ interface GithubHelper {
   
   addCommentReaction(commentId: number, reaction: string): Promise<void>;
   getRecentCommitsInRepo(max?: number): Promise<any[]>;
+
+  getDiffForPR(id: number): Promise<{ diff: string, title: string }>
   
   onRepoComment(fn: (payload: RepoCommentPayload, rawPayload: any) => void): void;
   onUpdatedPR(fn: (payload: UpdatedPRPayload) => void): void;
