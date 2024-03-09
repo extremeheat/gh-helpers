@@ -5,20 +5,73 @@
 
 Various helper methods for Github Actions/API automation
 
+### Install
+```
+npm install gh-actions
+```
+
+### Usage
+Within Github Actions, just
+```js
+const github = require('gh-helpers')()
+```
+Outside example over API for repo at PrismarineJS/vec3, make sure to specify your PAT with perms to the repo
+```js
+const github = require('gh-helpers')({
+  repo: { owner: 'PrismarineJS', name: 'vec3' }
+}, GITHUB_PAT)
+```
+
+### API
+
+See src/index.d.ts
+
 ```ts
-function getDefaultBranch(): string;
-function getInput(name: string, required?: boolean): string;
-function getIssueStatus(title: string): Promise<IssueStatus>;
-function updateIssue(id: number, payload: { body: string }): Promise<void>;
-function createIssue(payload: object): Promise<void>;
-function findPullRequest(titleIncludes: string, author?: string, status?: string): Promise<IssueStatus>;
-function getPullRequest(id: number): Promise<PullRequest>;
-function updatePull(id: number, payload: { title?: string; body?: string }): Promise<void>;
-function createPullRequest(title: string, body: string, fromBranch: string, intoBranch?: string): Promise<void>;
-function close(id: number, reason?: string): Promise<void>;
-function comment(id: number, body: string): Promise<void>;
-function addCommentReaction(commentId: number, reaction: string): Promise<void>;
-function getRecentCommitsInRepo(max?: number): Promise<any[]>;
-function onRepoComment(fn: (payload: RepoCommentPayload, rawPayload: any) => void): void;
-function onUpdatedPR(fn: (payload: UpdatedPRPayload) => void): void;
+interface GithubHelper {
+  repoURL: string;
+  getRepoDetails(): Promise<{
+    owner: string,
+    repo: string,
+    fullName: string,
+    private: boolean,
+    description: string,
+    defaultBranch: string,
+    url: string
+  }>;
+  getDefaultBranch(): string;
+  // Read an option from Github Actions' workflow args
+  getInput(name: string, required?: boolean): string;
+    
+  findIssues (options: PRLookupOpt): Promise<PRDetail[]>
+  getIssueStatus(options: PRLookupOpt): Promise<PRDetail & { open: string, closed: string, id: number }>;
+  
+  updateIssue(id: number, payload: { body: string }): Promise<void>;
+  createIssue(payload: object): Promise<void>;
+  
+  findPullRequests(options: PRLookupOpt): Promise<PRDetail[]>;
+  findPullRequest(options: PRLookupOpt): Promise<PRDetail>;
+  
+  getComments(id: number): Promise<Comments[]>;
+  
+  getPullRequest(id: number, includeComments?: boolean): Promise<PullRequest>;
+  updatePull(id: number, payload: { title?: string; body?: string }): Promise<void>;
+  createPullRequest(title: string, body: string, fromBranch: string, intoBranch?: string): Promise<void>;
+  
+  close(id: number, reason?: string): Promise<void>;
+  comment(id: number, body: string): Promise<void>;
+  
+  addCommentReaction(commentId: number, reaction: string): Promise<void>;
+  getRecentCommitsInRepo(max?: number): Promise<any[]>;
+  
+  onRepoComment(fn: (payload: RepoCommentPayload, rawPayload: any) => void): void;
+  onUpdatedPR(fn: (payload: UpdatedPRPayload) => void): void;
+}
+
+// If the module is instantiated within Github Actions, all the needed info
+// is avaliable over environment variables
+function loader(): GithubHelper
+// If the module is instantiated outside Actions over API, you need to supply
+// repo context + a Github personal access token (PAT)
+function loader (context: { repo: { org: string, name: string } }, githubToken?: string): GithubHelper
+export default loader
 ```

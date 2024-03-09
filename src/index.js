@@ -1,4 +1,4 @@
-if (globalThis.isMocha || !process.env.GITHUB_REPOSITORY) {
+if (globalThis.isMocha) {
   module.exports = require('./mock')
 } else {
   module.exports = require('./github')

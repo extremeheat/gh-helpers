@@ -33,4 +33,36 @@ const getRecentCommitsInRepo = () => [
     url: 'https://github.com/PrismarineJS/mineflayer/commit/c6e8aa895fd112876c0733f0b99bc3c2e3efc7c0'
   }
 ]
-module.exports = { mock: true, getDefaultBranch: () => 'master', getInput: noop, getIssueStatus: noop, updateIssue: noop, createIssue: noop, getPullRequest, findPullRequest: noop, updatePull: noop, comment: console.log, createPullRequest: noop, addCommentReaction: noop, getRecentCommitsInRepo, onRepoComment: noop, onUpdatedPR: noop, repoURL: 'https://github.com/' + process.env.GITHUB_REPOSITORY }
+module.exports = () => ({
+  mock: true,
+  getRepoDetails: () => ({
+    defaultBranch: 'main',
+    owner: 'extremeheat',
+    repo: 'LXL',
+    description: 'langxlang, a Node.js library to integrate LLMs into programming languages'
+  }),
+  getDefaultBranch: () => 'master',
+  getInput: noop,
+
+  findIssues: () => [],
+  getIssueStatus: noop,
+
+  updateIssue: noop,
+  createIssue: noop,
+
+  findPullRequests: () => [],
+  findPullRequest: noop,
+  getPullRequest,
+  updatePull: noop,
+  createPullRequest: noop,
+
+  close: console.log,
+  comment: console.log,
+
+  addCommentReaction: noop,
+  getRecentCommitsInRepo,
+
+  onRepoComment: noop,
+  onUpdatedPR: noop,
+  repoURL: 'https://github.com/' + process.env.GITHUB_REPOSITORY
+})
