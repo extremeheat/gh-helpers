@@ -41,6 +41,12 @@ module.exports = () => ({
     repo: 'LXL',
     description: 'langxlang, a Node.js library to integrate LLMs into programming languages'
   }),
+  getCurrentUser: () => ({
+    login: 'bot',
+    name: 'bot',
+    email: 'bot@bot.com',
+    avatar: 'https://example.com'
+  }),
   getDefaultBranch: () => 'master',
   getInput: noop,
 

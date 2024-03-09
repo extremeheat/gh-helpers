@@ -25,6 +25,19 @@ function mod (githubContext, githubToken) {
 
   const getInput = (name, required = false) => core.getInput(name, { required })
 
+  let currentUserData
+  async function getCurrentUser () {
+    if (currentUserData) return currentUserData
+    const user = await octokit.rest.users.getAuthenticated()
+    currentUserData = {
+      login: user.data.login,
+      name: user.data.name,
+      email: user.data.email,
+      avatar: user.data.avatar_url
+    }
+    return currentUserData
+  }
+
   async function findIssues ({ title, number, author = currentAuthor }) {
     // https://docs.github.com/en/rest/reference/search#search-issues-and-pull-requests
     let q = `is:issue repo:${fullName}`
@@ -299,6 +312,7 @@ function mod (githubContext, githubToken) {
   const repoURL = context.payload?.repository.html_url ?? `https://github.com/${context.repo.owner}/${context.repo.repo}`
 
   return {
+    getCurrentUser,
     getRepoDetails,
     getDefaultBranch,
     getInput,
