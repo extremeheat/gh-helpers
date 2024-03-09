@@ -63,6 +63,15 @@ type IssuePRDetail = {
 
 interface GithubHelper {
   repoURL: string;
+  // Gets information about the currently authenticated user (who's PAT is in use)
+  getCurrentUser(): Promise<{
+    // Github username
+    login: string,
+    // Full name
+    name: string,
+    email: string,
+    avatar: string
+  }>
   getRepoDetails(): Promise<{
     owner: string,
     repo: string,
@@ -75,30 +84,30 @@ interface GithubHelper {
   getDefaultBranch(): string;
   // Read an option from Github Actions' workflow args
   getInput(name: string, required?: boolean): string;
-    
-  findIssues (options: PRLookupOpt): Promise<IssuePRDetail[]>
+
+  findIssues(options: PRLookupOpt): Promise<IssuePRDetail[]>
   getIssueStatus(options: PRLookupOpt): Promise<IssuePRDetail & IssueStatus>;
-  
+
   updateIssue(id: number, payload: { body: string }): Promise<void>;
   createIssue(payload: object): Promise<void>;
-  
+
   findPullRequests(options: PRLookupOpt): Promise<IssuePRDetail[]>;
   findPullRequest(options: PRLookupOpt): Promise<IssuePRDetail>;
-  
+
   getComments(id: number): Promise<Comments[]>;
-  
+
   getPullRequest(id: number, includeComments?: boolean): Promise<FullPRData>;
   updatePull(id: number, payload: { title?: string; body?: string }): Promise<void>;
   createPullRequest(title: string, body: string, fromBranch: string, intoBranch?: string): Promise<void>;
-  
+
   close(id: number, reason?: string): Promise<void>;
   comment(id: number, body: string): Promise<void>;
-  
+
   addCommentReaction(commentId: number, reaction: string): Promise<void>;
   getRecentCommitsInRepo(max?: number): Promise<any[]>;
 
   getDiffForPR(id: number): Promise<{ diff: string, title: string }>
-  
+
   onRepoComment(fn: (payload: RepoCommentPayload, rawPayload: any) => void): void;
   onUpdatedPR(fn: (payload: UpdatedPRPayload) => void): void;
 }
@@ -108,6 +117,6 @@ interface GithubHelper {
 function loader(): GithubHelper
 // If the module is instantiated outside Actions over API, you need to supply
 // repo context + a Github personal access token (PAT)
-function loader (context: { repo: { owner: string, name: string } }, githubToken?: string): GithubHelper
+function loader(context: { repo: { owner: string, name: string } }, githubToken?: string): GithubHelper
 
 export default loader
