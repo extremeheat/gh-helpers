@@ -1,4 +1,10 @@
 ## 0.1.0
+BREAKING:
+* Module now exports a loader function, which allows gh-helpers to now work over Github Actions and independently over API
+* `findPullRequests`, `findPullRequest` - Now take object parameters, return expanded data
+* `findIssues`, `getIssueStatus` -- Now take object parameters, return expanded data
+
+Commits:
 * [Add `getCurrentUser` method (#2)](https://github.com/extremeheat/gh-helpers/commit/568e2288764f4e4ab1e09a2dd06b6623e40871a6) (thanks @extremeheat)
 * [Refactor to work outside Github Actions over Github API (#1)](https://github.com/extremeheat/gh-helpers/commit/102e8087772a8748c52012e8f3bd613f9f042d66) (thanks @extremeheat)
 * [resturcturing](https://github.com/extremeheat/gh-helpers/commit/bd945e4d53caefb3ca09da550a82fe5693d9c2d1) (thanks @extremeheat)
@@ -7,3 +13,5 @@
 * [init commit gh-helpers](https://github.com/extremeheat/gh-helpers/commit/65a9d5a36fb117239c0e8eb387228e77393d6e3e) (thanks @extremeheat)
 * [Initial commit](https://github.com/extremeheat/gh-helpers/commit/567b197f67639315a2324603d8cfd1a784b89b6b) (thanks @extremeheat)
 
+## 0.0.1
+Initial commit from PrismarineJS helper scripts
