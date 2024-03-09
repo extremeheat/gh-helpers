@@ -274,6 +274,17 @@ function mod (githubContext, githubToken) {
     }))
   }
 
+  // Send a workflow dispatch event to a repository in the specified owner
+  function sendWorkflowDispatch (owner, repo, workflow, inputs) {
+    return octokit.rest.actions.createWorkflowDispatch({
+      owner,
+      repo,
+      workflow_id: workflow,
+      ref: 'main',
+      inputs
+    })
+  }
+
   function onRepoComment (fn) {
     const payload = context.payload
     if (payload.comment && payload.issue) {
@@ -309,6 +320,24 @@ function mod (githubContext, githubToken) {
     }
   }
 
+  function onWorkflowDispatch (fn) {
+    const payload = context.payload
+    if (payload.workflow_dispatch) {
+      fn({
+        // The inputs that were passed to the workflow
+        inputs: payload.workflow_dispatch.inputs,
+        // The branch ref that the workflow was triggered on
+        ref: payload.workflow_dispatch.ref,
+        // The repository that the workflow ran on (owner/repo)
+        repository: payload.repository.full_name,
+        // Who triggered the workflow
+        actor: payload.sender.login,
+        // The workflow that was triggered
+        workflow: payload.workflow_dispatch.workflow
+      })
+    }
+  }
+
   const repoURL = context.payload?.repository.html_url ?? `https://github.com/${context.repo.owner}/${context.repo.repo}`
 
   return {
@@ -334,8 +363,12 @@ function mod (githubContext, githubToken) {
     comment,
     addCommentReaction,
     getRecentCommitsInRepo,
+
+    sendWorkflowDispatch,
+
     onRepoComment,
     onUpdatedPR,
+    onWorkflowDispatch,
     repoURL
   }
 }

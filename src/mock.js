@@ -68,7 +68,10 @@ module.exports = () => ({
   addCommentReaction: noop,
   getRecentCommitsInRepo,
 
+  sendWorkflowDispatch: noop,
+
   onRepoComment: noop,
   onUpdatedPR: noop,
+  onWorkflowDispatch: noop,
   repoURL: 'https://github.com/' + process.env.GITHUB_REPOSITORY
 })
