@@ -13,7 +13,7 @@ function mod (githubContext, githubToken) {
   const token = githubToken || core.getInput('token') || process.env.GITHUB_TOKEN
   if (!token) {
     console.error('No Github token was specified, please see the documentation for correct Action usage.')
-    process.exit()
+    process.exit(1)
   }
   // Depending on if we are using a PAT or the default GITHUB_TOKEN, the currentAuthor is different which matters when searching for bot PRs
   // https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github#githubs-token-formats
