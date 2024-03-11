@@ -22,7 +22,6 @@ function mod (githubContext, githubToken) {
   const octokit = github.getOctokit(token)
   // Full context object: https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts
   const fullName = context.repo.fullName || (context.repo.owner + '/' + context.repo.repo)
-  console.log('Repo full name', fullName)
 
   const getInput = (name, required = false) => core.getInput(name, { required })
 
