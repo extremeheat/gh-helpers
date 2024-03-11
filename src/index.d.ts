@@ -108,8 +108,25 @@ interface GithubHelper {
 
   getDiffForPR(id: number): Promise<{ diff: string, title: string }>
 
+  // Sends a workflow dispatch request to the specified owner/repo's $workflow.yml file, with the specified inputs
+  sendWorkflowDispatch (arg: { owner: string, repo: string, workflow: string, branch: string, inputs: Record<string, string> }): void
+
   onRepoComment(fn: (payload: RepoCommentPayload, rawPayload: any) => void): void;
   onUpdatedPR(fn: (payload: UpdatedPRPayload) => void): void;
+  onWorkflowDispatch(fn: (payload: {
+    // The inputs that were passed to the workflow
+    inputs: Record<string, string>,
+    // The branch ref that the workflow was triggered on
+    ref: string,
+    // The repository that the workflow ran on (owner/repo)
+    repo: string,
+    // Who triggered the workflow
+    sender: string,
+    // Full path to workflow that was triggered
+    workflowId: string,
+    // Name of the workflow file that was triggered
+    workflowName: string
+  }) => void): void;
 }
 
 // If the module is instantiated within Github Actions, all the needed info

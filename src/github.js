@@ -13,7 +13,7 @@ function mod (githubContext, githubToken) {
   const token = githubToken || core.getInput('token') || process.env.GITHUB_TOKEN
   if (!token) {
     console.error('No Github token was specified, please see the documentation for correct Action usage.')
-    process.exit()
+    process.exit(1)
   }
   // Depending on if we are using a PAT or the default GITHUB_TOKEN, the currentAuthor is different which matters when searching for bot PRs
   // https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github#githubs-token-formats
@@ -274,6 +274,17 @@ function mod (githubContext, githubToken) {
     }))
   }
 
+  // Send a workflow dispatch event to a repository in the specified owner
+  function sendWorkflowDispatch ({ owner, repo, branch, workflow, inputs }) {
+    return octokit.rest.actions.createWorkflowDispatch({
+      owner,
+      repo,
+      workflow_id: workflow,
+      ref: branch || 'main',
+      inputs
+    })
+  }
+
   function onRepoComment (fn) {
     const payload = context.payload
     if (payload.comment && payload.issue) {
@@ -309,6 +320,20 @@ function mod (githubContext, githubToken) {
     }
   }
 
+  function onWorkflowDispatch (fn) {
+    const payload = context.payload
+    if (context.eventName === 'workflow_dispatch') {
+      fn({
+        inputs: payload.inputs,
+        ref: payload.ref,
+        repo: payload.repository.full_name,
+        workflowId: payload.workflow,
+        workflowName: payload.workflow.split('/').pop(),
+        sender: payload.sender.login
+      })
+    }
+  }
+
   const repoURL = context.payload?.repository.html_url ?? `https://github.com/${context.repo.owner}/${context.repo.repo}`
 
   return {
@@ -334,8 +359,12 @@ function mod (githubContext, githubToken) {
     comment,
     addCommentReaction,
     getRecentCommitsInRepo,
+
+    sendWorkflowDispatch,
+
     onRepoComment,
     onUpdatedPR,
+    onWorkflowDispatch,
     repoURL
   }
 }
