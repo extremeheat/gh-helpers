@@ -1,7 +1,5 @@
 ## 0.1.2
-* [fix bug in findIssues()](https://github.com/extremeheat/gh-helpers/commit/0a10caa8b8a3eaee62432f20e7e7788e4ac8e5ce) (thanks @extremeheat)
-* [add some logging to findPullRequests/findIssues](https://github.com/extremeheat/gh-helpers/commit/9e9ce6425635e5e45d960f82687a1aec151a2ed3) (thanks @extremeheat)
-* [Update github.js](https://github.com/extremeheat/gh-helpers/commit/a05eded5e328d5cf97e6f5f2412ea8d6620d40d4) (thanks @extremeheat)
+* Fix bug in findIssues()
 
 ## 0.1.1
 * [Add workflow dispatch methods (#4)](https://github.com/extremeheat/gh-helpers/commit/aa9fec726c67a6c4d10d4ebc25145c1a462dff56) (thanks @extremeheat)
