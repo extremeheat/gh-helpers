@@ -9,6 +9,7 @@ function mod (githubContext, githubToken) {
     : (process.env.DEBUG ? console.debug.bind(null, '[GAH]') : () => {})
 
   const context = githubContext || github.context
+  console.dir(context, { depth: 5 })
   if (!context?.repo) throw new Error('Invalid arguments')
   const token = githubToken || core.getInput('token') || process.env.GITHUB_TOKEN
   if (!token) {
@@ -276,7 +277,6 @@ function mod (githubContext, githubToken) {
 
   // Send a workflow dispatch event to a repository in the specified owner
   function sendWorkflowDispatch ({ owner, repo, branch, workflow, inputs }) {
-    console.log('Sending workflow dispatch', arguments)
     return octokit.rest.actions.createWorkflowDispatch({
       owner,
       repo,
