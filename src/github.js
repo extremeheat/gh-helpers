@@ -9,7 +9,6 @@ function mod (githubContext, githubToken) {
     : (process.env.DEBUG ? console.debug.bind(null, '[GAH]') : () => {})
 
   const context = githubContext || github.context
-  console.dir(context, { depth: 5 })
   if (!context?.repo) throw new Error('Invalid arguments')
   const token = githubToken || core.getInput('token') || process.env.GITHUB_TOKEN
   if (!token) {
@@ -323,18 +322,14 @@ function mod (githubContext, githubToken) {
 
   function onWorkflowDispatch (fn) {
     const payload = context.payload
-    if (payload.workflow_dispatch) {
+    if (context.eventName === 'workflow_dispatch') {
       fn({
-        // The inputs that were passed to the workflow
-        inputs: payload.workflow_dispatch.inputs,
-        // The branch ref that the workflow was triggered on
-        ref: payload.workflow_dispatch.ref,
-        // The repository that the workflow ran on (owner/repo)
-        repository: payload.repository.full_name,
-        // Who triggered the workflow
-        actor: payload.sender.login,
-        // The workflow that was triggered
-        workflow: payload.workflow_dispatch.workflow
+        inputs: payload.inputs,
+        ref: payload.ref,
+        repo: payload.repository.full_name,
+        workflowId: payload.workflow,
+        workflowName: payload.workflow.split('/').pop(),
+        sender: payload.sender.login
       })
     }
   }

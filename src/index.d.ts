@@ -119,11 +119,13 @@ interface GithubHelper {
     // The branch ref that the workflow was triggered on
     ref: string,
     // The repository that the workflow ran on (owner/repo)
-    repository: string,
+    repo: string,
     // Who triggered the workflow
-    actor: string,
-    // The workflow that was triggered
-    workflow: string
+    sender: string,
+    // Full path to workflow that was triggered
+    workflowId: string,
+    // Name of the workflow file that was triggered
+    workflowName: string
   }) => void): void;
 }
 
