@@ -1,6 +1,6 @@
 {
   "name": "gh-helpers",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Various helper methods for Github Actions and API automation",
   "main": "src/index.js",
   "scripts": {

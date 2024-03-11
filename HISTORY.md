@@ -1,3 +1,6 @@
+## 0.1.2
+* Fix bug in findIssues()
+
 ## 0.1.1
 * [Add workflow dispatch methods (#4)](https://github.com/extremeheat/gh-helpers/commit/aa9fec726c67a6c4d10d4ebc25145c1a462dff56) (thanks @extremeheat)
 
