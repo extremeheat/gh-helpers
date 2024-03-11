@@ -45,6 +45,7 @@ function mod (githubContext, githubToken) {
     if (title) q += ` in:title ${title}`
     if (number) q += ` number:${number}`
     if (author) q += ` author:${author}`
+    console.log(`Searching issues with query [${q}]`)
 
     const existingIssues = await octokit.rest.search.issuesAndPullRequests(q)
     debug('Existing issues', q, existingIssues)
@@ -135,11 +136,11 @@ function mod (githubContext, githubToken) {
     status = 'open'
   }) {
     // https://docs.github.com/en/rest/reference/search#search-issues-and-pull-requests
-    const repo = context.repo.owner + '/' + context.repo.repo
-    let q = `is:pr repo:${repo}`
+    let q = `is:pr repo:${fullName}`
     if (titleIncludes) q += ` in:title ${titleIncludes}`
     if (author) q += ` author:${author}`
     if (status) q += ` is:${status}`
+    console.log(`Searching issues with query [${q}]`)
     const existingPulls = await octokit.rest.search.issuesAndPullRequests({ q })
     debug('Existing issue for query [', q, '] are', existingPulls.data.items)
     const results = existingPulls.data.items
