@@ -109,7 +109,7 @@ interface GithubHelper {
   getDiffForPR(id: number): Promise<{ diff: string, title: string }>
 
   // Sends a workflow dispatch request to the specified owner/repo's $workflow.yml file, with the specified inputs
-  sendWorkflowDispatch (owner: string, repo: string, workflow: string, inputs: Record<string, string>): void
+  sendWorkflowDispatch (arg: { owner: string, repo: string, workflow: string, branch: string, inputs: Record<string, string> }): void
 
   onRepoComment(fn: (payload: RepoCommentPayload, rawPayload: any) => void): void;
   onUpdatedPR(fn: (payload: UpdatedPRPayload) => void): void;
