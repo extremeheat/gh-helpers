@@ -45,9 +45,8 @@ function mod (githubContext, githubToken) {
     if (title) q += ` in:title ${title}`
     if (number) q += ` number:${number}`
     if (author) q += ` author:${author}`
-    console.log(`Searching issues with query [${q}]`)
-
-    const existingIssues = await octokit.rest.search.issuesAndPullRequests(q)
+    debug(`Searching issues with query [${q}]`)
+    const existingIssues = await octokit.rest.search.issuesAndPullRequests({ q })
     debug('Existing issues', q, existingIssues)
     const results = existingIssues.data.items
     return results.map(issue => ({
@@ -140,7 +139,7 @@ function mod (githubContext, githubToken) {
     if (titleIncludes) q += ` in:title ${titleIncludes}`
     if (author) q += ` author:${author}`
     if (status) q += ` is:${status}`
-    console.log(`Searching issues with query [${q}]`)
+    debug(`Searching issues with query [${q}]`)
     const existingPulls = await octokit.rest.search.issuesAndPullRequests({ q })
     debug('Existing issue for query [', q, '] are', existingPulls.data.items)
     const results = existingPulls.data.items
