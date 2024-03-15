@@ -33,7 +33,7 @@ const getRecentCommitsInRepo = () => [
     url: 'https://github.com/PrismarineJS/mineflayer/commit/c6e8aa895fd112876c0733f0b99bc3c2e3efc7c0'
   }
 ]
-module.exports = () => ({
+const mock = {
   mock: true,
   getRepoDetails: () => ({
     defaultBranch: 'main',
@@ -74,4 +74,5 @@ module.exports = () => ({
   onUpdatedPR: noop,
   onWorkflowDispatch: noop,
   repoURL: 'https://github.com/' + process.env.GITHUB_REPOSITORY
-})
+}
+module.exports = () => mock
