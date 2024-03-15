@@ -1,3 +1,7 @@
+## 0.1.3
+* [Add Github PR review support (#7)](https://github.com/extremeheat/gh-helpers/commit/b11866dc8950c34b9783a671705b559a0975d884) (thanks @extremeheat)
+* [mock: update handling to prevent dynamic object creation](https://github.com/extremeheat/gh-helpers/commit/c8d980eb23f8d461dab85b70fda05358bcabbf81) (thanks @extremeheat)
+
 ## 0.1.2
 * Fix bug in findIssues()
 
