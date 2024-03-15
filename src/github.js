@@ -232,6 +232,15 @@ function mod (githubContext, githubToken) {
     })
   }
 
+  async function createPullRequestReview (id, payload) {
+    debug('createPullRequestReview', id, payload)
+    await octokit.rest.pulls.createReview({
+      ...context.repo,
+      pull_number: id,
+      ...payload
+    })
+  }
+
   async function addCommentReaction (commentId, reaction) {
     await octokit.rest.reactions.createForIssueComment({
       ...context.repo,
@@ -355,6 +364,8 @@ function mod (githubContext, githubToken) {
 
     updatePull,
     createPullRequest,
+    createPullRequestReview,
+
     close,
     comment,
     addCommentReaction,

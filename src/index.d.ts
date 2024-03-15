@@ -99,6 +99,12 @@ interface GithubHelper {
   getPullRequest(id: number, includeComments?: boolean): Promise<FullPRData>;
   updatePull(id: number, payload: { title?: string; body?: string }): Promise<void>;
   createPullRequest(title: string, body: string, fromBranch: string, intoBranch?: string): Promise<void>;
+  createPullRequestReview(id: number, payload: {
+    commit_id?: string | undefined;
+    body?: string | undefined;
+    event?: "APPROVE" | "REQUEST_CHANGES" | "COMMENT" | undefined;
+    comments?: object[]
+  }): Promise<void>;
 
   close(id: number, reason?: string): Promise<void>;
   comment(id: number, body: string): Promise<void>;
