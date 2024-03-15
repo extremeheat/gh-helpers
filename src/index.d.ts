@@ -142,4 +142,4 @@ function loader(): GithubHelper
 // repo context + a Github personal access token (PAT)
 function loader(context: { repo: { owner: string, name: string } }, githubToken?: string): GithubHelper
 
-export default loader
+export = loader
