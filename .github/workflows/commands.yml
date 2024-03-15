@@ -13,7 +13,7 @@ jobs:
     - name: Check out repository
       uses: actions/checkout@v3
     - name: Run command handlers
-      uses: extremeheat/prismarine-repo-actions@286db4a25c51225b033becb657ad3132bee6a49dz
+      uses: extremeheat/prismarine-repo-actions@master
       with:
         # NOTE: You must specify a Personal Access Token (PAT) with repo access here. While you can use the default GITHUB_TOKEN, actions taken with it will not trigger other actions, so if you have a CI workflow, commits created by this action will not trigger it.
         token: ${{ secrets.GITHUB_TOKEN }}
