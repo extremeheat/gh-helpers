@@ -61,6 +61,7 @@ const mock = {
   getPullRequest,
   updatePull: noop,
   createPullRequest: noop,
+  createPullRequestReview: noop,
 
   close: console.log,
   comment: console.log,
