@@ -223,13 +223,17 @@ function mod (githubContext, githubToken) {
     if (!intoBranch) {
       intoBranch = await getDefaultBranch()
     }
-    await octokit.rest.pulls.create({
+    const pr = await octokit.rest.pulls.create({
       ...context.repo,
       title,
       body,
       head: fromBranch,
       base: intoBranch
     })
+    return {
+      number: pr.data.number,
+      url: pr.data.html_url
+    }
   }
 
   async function createPullRequestReview (id, payload) {

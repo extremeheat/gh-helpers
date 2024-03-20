@@ -98,7 +98,7 @@ interface GithubHelper {
 
   getPullRequest(id: number, includeComments?: boolean): Promise<FullPRData>;
   updatePull(id: number, payload: { title?: string; body?: string }): Promise<void>;
-  createPullRequest(title: string, body: string, fromBranch: string, intoBranch?: string): Promise<void>;
+  createPullRequest(title: string, body: string, fromBranch: string, intoBranch?: string): Promise<{ number: number, url: string }>;
   createPullRequestReview(id: number, payload: {
     commit_id?: string | undefined;
     body?: string | undefined;

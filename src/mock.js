@@ -60,7 +60,7 @@ const mock = {
   findPullRequest: noop,
   getPullRequest,
   updatePull: noop,
-  createPullRequest: noop,
+  createPullRequest: () => ({ number: 420, url: 'http://example.url/420' }),
   createPullRequestReview: noop,
 
   close: console.log,
