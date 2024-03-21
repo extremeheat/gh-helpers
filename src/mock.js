@@ -67,6 +67,8 @@ const mock = {
   comment: console.log,
 
   addCommentReaction: noop,
+  getDiffForCommit: () => ({ diff: '', title: '', number: 0 }),
+  getDiffForPR: () => ({ diff: '', url: '' }),
   getRecentCommitsInRepo,
 
   sendWorkflowDispatch: noop,

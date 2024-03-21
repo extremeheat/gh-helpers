@@ -107,12 +107,16 @@ interface GithubHelper {
   }): Promise<void>;
 
   close(id: number, reason?: string): Promise<void>;
+  // Comment on an issue or PR
   comment(id: number, body: string): Promise<void>;
+  // Comment on a commit hash
+  comment(id: string, body: string): Promise<void>;
 
   addCommentReaction(commentId: number, reaction: string): Promise<void>;
   getRecentCommitsInRepo(max?: number): Promise<any[]>;
 
   getDiffForPR(id: number): Promise<{ diff: string, title: string }>
+  getDiffForCommit(hash: string): Promise<{ diff: string, url: string }>
 
   // Sends a workflow dispatch request to the specified owner/repo's $workflow.yml file, with the specified inputs
   sendWorkflowDispatch (arg: { owner: string, repo: string, workflow: string, branch: string, inputs: Record<string, string> }): void
