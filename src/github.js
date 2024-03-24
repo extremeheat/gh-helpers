@@ -95,7 +95,13 @@ function mod (githubContext, githubToken) {
   }
 
   async function comment (id, body) {
-    await octokit.rest.issues.createComment({ ...context.repo, issue_number: id, body })
+    if (typeof id === 'string' && id.length > 16) {
+      // this is a commit sha hash
+      await octokit.rest.repos.createCommitComment({ ...context.repo, commit_sha: id, body })
+    } else {
+      // this is an issue or PR number
+      await octokit.rest.issues.createComment({ ...context.repo, issue_number: id, body })
+    }
   }
 
   let repoDetails
@@ -254,10 +260,6 @@ function mod (githubContext, githubToken) {
   }
 
   async function getDiffForPR (id) {
-    const { data } = await octokit.rest.pulls.get({
-      ...context.repo,
-      pull_number: id
-    })
     const diff = await octokit.rest.pulls.get({
       ...context.repo,
       pull_number: id,
@@ -266,9 +268,20 @@ function mod (githubContext, githubToken) {
       }
     })
     return {
-      diff: diff.data,
-      title: data.title,
-      number: data.number
+      diff: diff.data
+    }
+  }
+
+  async function getDiffForCommit (sha) {
+    const diff = await octokit.rest.repos.getCommit({
+      ...context.repo,
+      ref: sha,
+      mediaType: {
+        format: 'diff'
+      }
+    })
+    return {
+      diff: diff.data
     }
   }
 
@@ -362,6 +375,7 @@ function mod (githubContext, githubToken) {
     findPullRequest,
     getPullRequest,
     getDiffForPR,
+    getDiffForCommit,
 
     updateIssue,
     createIssue,

@@ -64,18 +64,45 @@ interface GithubHelper {
 
   getPullRequest(id: number, includeComments?: boolean): Promise<FullPRData>;
   updatePull(id: number, payload: { title?: string; body?: string }): Promise<void>;
-  createPullRequest(title: string, body: string, fromBranch: string, intoBranch?: string): Promise<void>;
+  createPullRequest(title: string, body: string, fromBranch: string, intoBranch?: string): Promise<{ number: number, url: string }>;
+  createPullRequestReview(id: number, payload: {
+    commit_id?: string | undefined;
+    body?: string | undefined;
+    event?: "APPROVE" | "REQUEST_CHANGES" | "COMMENT" | undefined;
+    comments?: object[]
+  }): Promise<void>;
 
   close(id: number, reason?: string): Promise<void>;
+  // Comment on an issue or PR
   comment(id: number, body: string): Promise<void>;
+  // Comment on a commit hash
+  comment(id: string, body: string): Promise<void>;
 
   addCommentReaction(commentId: number, reaction: string): Promise<void>;
   getRecentCommitsInRepo(max?: number): Promise<any[]>;
 
   getDiffForPR(id: number): Promise<{ diff: string, title: string }>
+  getDiffForCommit(hash: string): Promise<{ diff: string, url: string }>
+
+  // Sends a workflow dispatch request to the specified owner/repo's $workflow.yml file, with the specified inputs
+  sendWorkflowDispatch (arg: { owner: string, repo: string, workflow: string, branch: string, inputs: Record<string, string> }): void
 
   onRepoComment(fn: (payload: RepoCommentPayload, rawPayload: any) => void): void;
   onUpdatedPR(fn: (payload: UpdatedPRPayload) => void): void;
+  onWorkflowDispatch(fn: (payload: {
+    // The inputs that were passed to the workflow
+    inputs: Record<string, string>,
+    // The branch ref that the workflow was triggered on
+    ref: string,
+    // The repository that the workflow ran on (owner/repo)
+    repo: string,
+    // Who triggered the workflow
+    sender: string,
+    // Full path to workflow that was triggered
+    workflowId: string,
+    // Name of the workflow file that was triggered
+    workflowName: string
+  }) => void): void;
 }
 
 // If the module is instantiated within Github Actions, all the needed info
@@ -85,5 +112,5 @@ function loader(): GithubHelper
 // repo context + a Github personal access token (PAT)
 function loader(context: { repo: { owner: string, name: string } }, githubToken?: string): GithubHelper
 
-export default loader
+export = loader
 ```
