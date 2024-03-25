@@ -56,19 +56,15 @@ function mod (githubContext, githubToken) {
       url: issue.html_url,
       author: issue.user.login,
       body: issue.body,
-      created: issue.created_at
+      created: issue.created_at,
+      isOpen: issue.state === 'open',
+      isClosed: issue.state === 'closed'
     }))
   }
 
-  async function getIssueStatus (options) {
+  async function findIssue (options) {
     const existingIssues = await findIssues(options)
-    const existingIssue = existingIssues[0]
-    if (!existingIssue) return {}
-    return {
-      ...existingIssue,
-      open: existingIssue.state === 'open',
-      closed: existingIssue.state === 'closed'
-    }
+    return existingIssues[0]
   }
 
   async function updateIssue (id, payload) {
@@ -156,20 +152,15 @@ function mod (githubContext, githubToken) {
       url: issue.html_url,
       author: issue.user.login,
       body: issue.body,
-      created: issue.created_at
+      created: issue.created_at,
+      isOpen: issue.state === 'open',
+      isClosed: issue.state === 'closed'
     }))
   }
 
   async function findPullRequest (options) {
-    const pull = await findPullRequests(options)
-    const existingPull = pull[0]
-    if (!existingPull) return {}
-    debug('Found PR #', existingPull.number)
-    return {
-      ...existingPull,
-      open: existingPull.state === 'open',
-      closed: existingPull.state === 'closed'
-    }
+    const pulls = await findPullRequests(options)
+    return pulls[0]
   }
 
   async function updatePull (id, { title, body }) {
@@ -367,10 +358,11 @@ function mod (githubContext, githubToken) {
     getRepoDetails,
     getDefaultBranch,
     getInput,
-    getIssueStatus,
-    getComments,
 
     findIssues,
+    findIssue,
+    getComments,
+
     findPullRequests,
     findPullRequest,
     getPullRequest,
