@@ -38,12 +38,13 @@ function mod (githubContext, githubToken) {
     return currentUserData
   }
 
-  async function findIssues ({ title, number, author = currentAuthor }) {
+  async function findIssues ({ titleIncludes, number, status, author = currentAuthor }) {
     // https://docs.github.com/en/rest/reference/search#search-issues-and-pull-requests
     let q = `is:issue repo:${fullName}`
-    if (title) q += ` in:title ${title}`
+    if (titleIncludes) q += ` in:title ${titleIncludes}`
     if (number) q += ` number:${number}`
     if (author) q += ` author:${author}`
+    if (status) q += ` is:${status}`
     debug(`Searching issues with query [${q}]`)
     const existingIssues = await octokit.rest.search.issuesAndPullRequests({ q })
     debug('Existing issues', q, existingIssues)
@@ -132,12 +133,14 @@ function mod (githubContext, githubToken) {
 
   async function findPullRequests ({
     titleIncludes,
+    number,
     author = currentAuthor,
     status = 'open'
   }) {
     // https://docs.github.com/en/rest/reference/search#search-issues-and-pull-requests
     let q = `is:pr repo:${fullName}`
     if (titleIncludes) q += ` in:title ${titleIncludes}`
+    if (number) q += ` number:${number}`
     if (author) q += ` author:${author}`
     if (status) q += ` is:${status}`
     debug(`Searching issues with query [${q}]`)

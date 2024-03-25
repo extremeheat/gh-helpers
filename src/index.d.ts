@@ -56,7 +56,9 @@ type IssuePRDetail = {
   url: string,
   author: string,
   body: string,
-  created: string
+  created: string,
+  isOpen: boolean,
+  isClosed: boolean
 }
 
 interface GithubHelper {
@@ -84,8 +86,7 @@ interface GithubHelper {
   getInput(name: string, required?: boolean): string;
 
   findIssues(options: PRLookupOpt): Promise<IssuePRDetail[]>
-  findIssue(options: PRLookupOpt): Promise<IssuePRDetail
-    & { open: boolean, closed: boolean, id?: number }>
+  findIssue(options: PRLookupOpt): Promise<IssuePRDetail>
 
   updateIssue(id: number, payload: { body: string }): Promise<void>;
   createIssue(payload: object): Promise<void>;
