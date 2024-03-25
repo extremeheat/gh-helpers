@@ -51,7 +51,7 @@ const mock = {
   getInput: noop,
 
   findIssues: () => [],
-  getIssueStatus: noop,
+  findIssue: noop,
 
   updateIssue: noop,
   createIssue: noop,
