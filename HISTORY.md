@@ -1,3 +1,15 @@
+## 0.2.0
+* [Return new issue ID in createIssue call (#11)](https://github.com/extremeheat/gh-helpers/commit/a1ead2fded9bd8acfb5d449afe0084d796f9c1dc) (thanks @extremeheat)
+* [Update and rename API methods for consistency (#10)](https://github.com/extremeheat/gh-helpers/commit/1ec54a6a2acce3a18ecee8166cad4ea0d9793407) (thanks @extremeheat)
+* [Add `getDiffForCommit` method, support comments on commits (#9)](https://github.com/extremeheat/gh-helpers/commit/e08c439d2299d5c161e5404ed0ca5816a6bd625f) (thanks @extremeheat)
+* [Return PR number in createPullRequest()](https://github.com/extremeheat/gh-helpers/commit/a012fac7b3966f684520642148b993ed410403ba) (thanks @extremeheat)
+* [use pat in commands workflow](https://github.com/extremeheat/gh-helpers/commit/db94a0aa5a36b67a23cdcb550afa63bc49516bfc) (thanks @extremeheat)
+* [revert](https://github.com/extremeheat/gh-helpers/commit/4b76ac22daac69e110828f37a7737040d3c29179) (thanks @extremeheat)
+* [?](https://github.com/extremeheat/gh-helpers/commit/ac2f748760f946a658d73415133a9eb7fc9d4b70) (thanks @extremeheat)
+* [update command workflow](https://github.com/extremeheat/gh-helpers/commit/e3540f3917e5324257145864abed15d6243f1482) (thanks @extremeheat)
+* [update commands workflow to point to extremeheat](https://github.com/extremeheat/gh-helpers/commit/5b3428224a1d534be7a5b6c7e99464d7455d4790) (thanks @extremeheat)
+* [fix type export](https://github.com/extremeheat/gh-helpers/commit/71b6dcef06b8cf374c3797835075e72e089d740f) (thanks @extremeheat)
+
 ## 0.1.3
 * [Add Github PR review support (#7)](https://github.com/extremeheat/gh-helpers/commit/b11866dc8950c34b9783a671705b559a0975d884) (thanks @extremeheat)
 * [mock: update handling to prevent dynamic object creation](https://github.com/extremeheat/gh-helpers/commit/c8d980eb23f8d461dab85b70fda05358bcabbf81) (thanks @extremeheat)
