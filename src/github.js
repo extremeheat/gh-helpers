@@ -83,6 +83,10 @@ function mod (githubContext, githubToken) {
       ...payload
     })
     debug(`Created issue ${issue.data.title}#${issue.data.number}: ${issue.data.html_url}`)
+    return {
+      number: issue.data.number,
+      url: issue.data.html_url
+    }
   }
 
   async function close (id, reason) {
@@ -94,10 +98,36 @@ function mod (githubContext, githubToken) {
   async function comment (id, body) {
     if (typeof id === 'string' && id.length > 16) {
       // this is a commit sha hash
-      await octokit.rest.repos.createCommitComment({ ...context.repo, commit_sha: id, body })
+      const data = await octokit.rest.repos.createCommitComment({ ...context.repo, commit_sha: id, body })
+      return {
+        type: 'commit',
+        id: data.data.id,
+        url: data.data.html_url
+      }
     } else {
       // this is an issue or PR number
-      await octokit.rest.issues.createComment({ ...context.repo, issue_number: id, body })
+      const data = await octokit.rest.issues.createComment({ ...context.repo, issue_number: id, body })
+      return {
+        type: 'issue',
+        id: data.data.id,
+        url: data.data.html_url
+      }
+    }
+  }
+
+  async function updateComment (id, body, type = 'issue') {
+    if (type === 'commit') {
+      const data = await octokit.rest.repos.updateCommitComment({ ...context.repo, comment_id: id, body })
+      return {
+        id: data.data.id,
+        url: data.data.html_url
+      }
+    } else {
+      const data = await octokit.rest.issues.updateComment({ ...context.repo, comment_id: id, body })
+      return {
+        id: data.data.id,
+        url: data.data.html_url
+      }
     }
   }
 
@@ -381,6 +411,7 @@ function mod (githubContext, githubToken) {
 
     close,
     comment,
+    updateComment,
     addCommentReaction,
     getRecentCommitsInRepo,
 

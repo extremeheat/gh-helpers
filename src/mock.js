@@ -65,6 +65,7 @@ const mock = {
 
   close: console.log,
   comment: console.log,
+  updateComment: console.log,
 
   addCommentReaction: noop,
   getDiffForCommit: () => ({ diff: '', title: '', number: 0 }),

@@ -111,9 +111,12 @@ interface GithubHelper {
   close(id: number, reason?: string): Promise<void>;
 
   // Comment on an issue or PR
-  comment(id: number, body: string): Promise<void>;
+  comment(id: number, body: string): Promise<{ type: 'issue', id: number, url: string }>;
   // Comment on a commit hash
-  comment(id: string, body: string): Promise<void>;
+  comment(id: string, body: string): Promise<{ type: 'commit', id: number, url: string }>;
+
+  // Update a comment on an issue or commit
+  updateComment(id: string, body: string, type?: 'issue' | 'commit'): Promise<void>
 
   addCommentReaction(commentId: number, reaction: string): Promise<void>;
   getRecentCommitsInRepo(max?: number): Promise<any[]>;
