@@ -52,7 +52,7 @@ interface GithubHelper {
   getInput(name: string, required?: boolean): string;
 
   findIssues(options: PRLookupOpt): Promise<IssuePRDetail[]>
-  getIssueStatus(options: PRLookupOpt): Promise<IssuePRDetail & IssueStatus>;
+  findIssue(options: PRLookupOpt): Promise<IssuePRDetail>
 
   updateIssue(id: number, payload: { body: string }): Promise<void>;
   createIssue(payload: object): Promise<void>;
@@ -60,9 +60,11 @@ interface GithubHelper {
   findPullRequests(options: PRLookupOpt): Promise<IssuePRDetail[]>;
   findPullRequest(options: PRLookupOpt): Promise<IssuePRDetail>;
 
-  getComments(id: number): Promise<Comments[]>;
+  getComments(id: number): Promise<Comment[]>;
 
+  // Get full details about a PR by ID
   getPullRequest(id: number, includeComments?: boolean): Promise<FullPRData>;
+
   updatePull(id: number, payload: { title?: string; body?: string }): Promise<void>;
   createPullRequest(title: string, body: string, fromBranch: string, intoBranch?: string): Promise<{ number: number, url: string }>;
   createPullRequestReview(id: number, payload: {
@@ -73,10 +75,14 @@ interface GithubHelper {
   }): Promise<void>;
 
   close(id: number, reason?: string): Promise<void>;
+
   // Comment on an issue or PR
-  comment(id: number, body: string): Promise<void>;
+  comment(id: number, body: string): Promise<{ type: 'issue', id: number, url: string }>;
   // Comment on a commit hash
-  comment(id: string, body: string): Promise<void>;
+  comment(id: string, body: string): Promise<{ type: 'commit', id: number, url: string }>;
+
+  // Update a comment on an issue or commit
+  updateComment(id: string, body: string, type?: 'issue' | 'commit'): Promise<void>
 
   addCommentReaction(commentId: number, reaction: string): Promise<void>;
   getRecentCommitsInRepo(max?: number): Promise<any[]>;
@@ -85,7 +91,9 @@ interface GithubHelper {
   getDiffForCommit(hash: string): Promise<{ diff: string, url: string }>
 
   // Sends a workflow dispatch request to the specified owner/repo's $workflow.yml file, with the specified inputs
-  sendWorkflowDispatch (arg: { owner: string, repo: string, workflow: string, branch: string, inputs: Record<string, string> }): void
+  sendWorkflowDispatch(arg: { owner: string, repo: string, workflow: string, branch: string, inputs: Record<string, string> }): void
+
+  // Events
 
   onRepoComment(fn: (payload: RepoCommentPayload, rawPayload: any) => void): void;
   onUpdatedPR(fn: (payload: UpdatedPRPayload) => void): void;

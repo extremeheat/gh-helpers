@@ -1,6 +1,9 @@
 ## 0.2.0
 Breaking:
 * [Update and rename API methods for consistency (#10)](https://github.com/extremeheat/gh-helpers/commit/1ec54a6a2acce3a18ecee8166cad4ea0d9793407) (thanks @extremeheat)
+  * Breaking: remove .getIssueStatus() in favor of .findIssue()
+  * Breaking: rename .findIssue({ title }) in favor of .findIssue({ titleIncludes }) to be consistent with findPullRequests
+  * Breaking: findIssue() and findPullRequest() now return null instead of empty object on find failure
 
 Feature:
 * [Return new issue ID in createIssue call (#11)](https://github.com/extremeheat/gh-helpers/commit/a1ead2fded9bd8acfb5d449afe0084d796f9c1dc) (thanks @extremeheat)
