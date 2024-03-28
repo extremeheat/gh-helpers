@@ -1,3 +1,15 @@
+## 0.2.0
+Breaking:
+* [Update and rename API methods for consistency (#10)](https://github.com/extremeheat/gh-helpers/commit/1ec54a6a2acce3a18ecee8166cad4ea0d9793407) (thanks @extremeheat)
+
+Feature:
+* [Return new issue ID in createIssue call (#11)](https://github.com/extremeheat/gh-helpers/commit/a1ead2fded9bd8acfb5d449afe0084d796f9c1dc) (thanks @extremeheat)
+* [Add `getDiffForCommit` method, support comments on commits (#9)](https://github.com/extremeheat/gh-helpers/commit/e08c439d2299d5c161e5404ed0ca5816a6bd625f) (thanks @extremeheat)
+* [Return PR number in createPullRequest()](https://github.com/extremeheat/gh-helpers/commit/a012fac7b3966f684520642148b993ed410403ba) (thanks @extremeheat)
+
+Fix:
+* Fix typescript types
+
 ## 0.1.3
 * [Add Github PR review support (#7)](https://github.com/extremeheat/gh-helpers/commit/b11866dc8950c34b9783a671705b559a0975d884) (thanks @extremeheat)
 * [mock: update handling to prevent dynamic object creation](https://github.com/extremeheat/gh-helpers/commit/c8d980eb23f8d461dab85b70fda05358bcabbf81) (thanks @extremeheat)
