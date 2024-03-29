@@ -170,7 +170,7 @@ interface GithubHelper {
 }
 
 interface ArtifactsAPI {
-  upload(name: number, files: string[], options: object): Promise
+  upload(name: number, files: string[], options: object): Promise<{ id: number, size: number }>
   deleteId(id: number): Promise
   deleteIdFrom(owner: string, repo: string, id: number): Promise
   downloadId(id: number, path: string): Promise
@@ -179,6 +179,7 @@ interface ArtifactsAPI {
   listFrom(): Promise<Artifact[]>
   readTextArtifact(id: number): Promise<Record<string, Artifact>>
   readTextArtifactFrom(owner: string, repo: string, id: number): Promise<Record<string, Artifact>>
+  writeTextArtifact(name: string, fileContents: Record<string, string>): Promise<{ id: number, size: number }>
 }
 
 // If the module is instantiated within Github Actions, all the needed info

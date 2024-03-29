@@ -59,7 +59,8 @@ const mock = {
     list: () => [],
     listFrom: () => [],
     readTextArtifact: noop,
-    readTextArtifactFrom: noop
+    readTextArtifactFrom: noop,
+    writeTextArtifact: noop
   },
 
   findIssues: () => [],

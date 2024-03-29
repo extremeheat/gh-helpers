@@ -96,6 +96,16 @@ function mod (githubContext, githubToken) {
     return _readTextArtifact(id, owner, repo)
   }
 
+  async function writeTextArtifact (name, fileContents) {
+    const tempFolder = __dirname + '/atemp-' + Date.now() // eslint-disable-line
+    for (const file in fileContents) {
+      fs.writeFileSync(tempFolder, fileContents[file])
+    }
+    const { id, size } = await uploadArtifact(name, tempFolder)
+    fs.rmdirSync(tempFolder, { recursive: true })
+    return { id, size }
+  }
+
   async function listArtifacts () {
     return await artifact.listArtifacts()
   }
@@ -473,7 +483,8 @@ function mod (githubContext, githubToken) {
       list: listArtifacts,
       listFrom: listArtifactsFrom,
       readTextArtifact,
-      readTextArtifactFrom
+      readTextArtifactFrom,
+      writeTextArtifact
     },
 
     findIssues,
