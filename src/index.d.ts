@@ -47,7 +47,7 @@ type UpdatedPRPayload = {
   isOpen: boolean;
 };
 
-type PRLookupOpt = { titleIncludes: string, author?: string, status?: string }
+type IssuePRLookupOpts = { titleIncludes?: string, author?: string, status?: string, number?: number }
 type IssuePRDetail = {
   state: string,
   id: number,
@@ -85,14 +85,14 @@ interface GithubHelper {
   // Read an option from Github Actions' workflow args
   getInput(name: string, required?: boolean): string;
 
-  findIssues(options: PRLookupOpt): Promise<IssuePRDetail[]>
-  findIssue(options: PRLookupOpt): Promise<IssuePRDetail>
+  findIssues(options: IssuePRLookupOpts): Promise<IssuePRDetail[]>
+  findIssue(options: IssuePRLookupOpts): Promise<IssuePRDetail>
 
   updateIssue(id: number, payload: { body: string }): Promise<void>;
   createIssue(payload: object): Promise<void>;
 
-  findPullRequests(options: PRLookupOpt): Promise<IssuePRDetail[]>;
-  findPullRequest(options: PRLookupOpt): Promise<IssuePRDetail>;
+  findPullRequests(options: IssuePRLookupOpts): Promise<IssuePRDetail[]>;
+  findPullRequest(options: IssuePRLookupOpts): Promise<IssuePRDetail>;
 
   getComments(id: number): Promise<Comment[]>;
 
