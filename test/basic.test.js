@@ -21,7 +21,7 @@ describe('basic usage', () => {
     // Test upload
     const fileA = { hello: 'world' }
     const ret = await github.artifacts.writeTextArtifact('ci-test', {
-      fileA: JSON.stringify(fileA)
+      'fileA.json': JSON.stringify(fileA)
     }, {
       retentionDays: 1
     })
