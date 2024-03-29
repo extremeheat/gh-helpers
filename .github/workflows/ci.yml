@@ -18,6 +18,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Expose GitHub Runtime
+      uses: crazy-max/ghaction-github-runtime@v3
     - run: npm install
     # Dump all the environment variables
     - run: printenv
