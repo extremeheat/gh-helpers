@@ -1,6 +1,8 @@
 // const { Octokit } = require('@octokit/rest') // https://github.com/octokit/rest.js
 const github = require('@actions/github')
 const core = require('@actions/core')
+const { DefaultArtifactClient } = require('@actions/artifact')
+
 // const runningOverActions = !!process.env.GITHUB_ACTIONS
 
 function mod (githubContext, githubToken) {
@@ -23,6 +25,7 @@ function mod (githubContext, githubToken) {
   // Full context object: https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts
   const fullName = context.repo.fullName || (context.repo.owner + '/' + context.repo.repo)
 
+  const artifact = new DefaultArtifactClient()
   const getInput = (name, required = false) => core.getInput(name, { required })
 
   let currentUserData
@@ -37,6 +40,51 @@ function mod (githubContext, githubToken) {
     }
     return currentUserData
   }
+
+  // Artifacts
+  async function uploadArtifact (name, files, options) {
+    const { id, size } = await artifact.uploadArtifact(name, files, options)
+    return { id, size }
+  }
+
+  async function deleteArtifactId (id) {
+    return await artifact.deleteArtifact(id)
+  }
+
+  async function deleteArtifactIdFrom (owner, repo, id) {
+    return await artifact.deleteArtifact(id, {
+      token,
+      repositoryOwner: owner,
+      repositoryName: repo
+    })
+  }
+
+  async function downloadArtifactId (id, path) {
+    return await artifact.downloadArtifact(id, { path })
+  }
+
+  async function downloadArtifactIdFrom (owner, repo, id, path) {
+    return await artifact.downloadArtifact(id, {
+      token,
+      repositoryOwner: owner,
+      repositoryName: repo,
+      path
+    })
+  }
+
+  async function listArtifacts () {
+    return await artifact.listArtifacts()
+  }
+
+  async function listArtifactsFrom (owner, repo) {
+    return await artifact.listArtifacts({
+      token,
+      repositoryOwner: owner,
+      repositoryName: repo
+    })
+  }
+
+  // End Artifacts
 
   async function findIssues ({ titleIncludes, number, status, author = currentAuthor }) {
     // https://docs.github.com/en/rest/reference/search#search-issues-and-pull-requests
@@ -391,6 +439,16 @@ function mod (githubContext, githubToken) {
     getRepoDetails,
     getDefaultBranch,
     getInput,
+
+    artifacts: {
+      upload: uploadArtifact,
+      deleteId: deleteArtifactId,
+      deleteIdFrom: deleteArtifactIdFrom,
+      downloadId: downloadArtifactId,
+      downloadIdFrom: downloadArtifactIdFrom,
+      list: listArtifacts,
+      listFrom: listArtifactsFrom
+    },
 
     findIssues,
     findIssue,

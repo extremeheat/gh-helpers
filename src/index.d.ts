@@ -61,6 +61,26 @@ type IssuePRDetail = {
   isClosed: boolean
 }
 
+// https://github.com/extremeheat/gh-helpers/blob/art/node_modules/%40actions/artifact/lib/internal/shared/interfaces.d.ts#L96
+interface Artifact {
+  /**
+   * The name of the artifact
+   */
+  name: string;
+  /**
+   * The ID of the artifact
+   */
+  id: number;
+  /**
+   * The size of the artifact in bytes
+   */
+  size: number;
+  /**
+   * The time when the artifact was created
+   */
+  createdAt?: Date;
+}
+
 interface GithubHelper {
   repoURL: string;
   // Gets information about the currently authenticated user (who's PAT is in use)
@@ -145,6 +165,18 @@ interface GithubHelper {
     // Name of the workflow file that was triggered
     workflowName: string
   }) => void): void;
+
+  artifacts: ArtifactsAPI
+}
+
+interface ArtifactsAPI {
+  upload(name: number, files: string[], options: object): Promise
+  deleteId(id: number): Promise
+  deleteIdFrom(owner: string, repo: string, id: number): Promise
+  downloadId(id: number, path: string): Promise
+  downloadIdFrom(owner: string, repo: string, id: string, path: string): Promise
+  list(): Promise<Artifact[]>
+  listFrom(): Promise<Artifact[]>
 }
 
 // If the module is instantiated within Github Actions, all the needed info

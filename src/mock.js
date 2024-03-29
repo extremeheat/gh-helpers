@@ -50,6 +50,16 @@ const mock = {
   getDefaultBranch: () => 'master',
   getInput: noop,
 
+  artifacts: {
+    upload: () => ({ id: 1, size: 0 }),
+    deleteId: noop,
+    deleteIdFrom: noop,
+    downloadId: noop,
+    downloadIdFrom: noop,
+    list: () => [],
+    listFrom: () => []
+  },
+
   findIssues: () => [],
   findIssue: noop,
 
