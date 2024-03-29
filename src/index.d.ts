@@ -200,7 +200,7 @@ interface GithubHelper {
 }
 
 interface ArtifactsAPI {
-  upload(name: number, files: string[], options: UploadArtifactOptions): Promise<{ id: number, size: number }>
+  upload(name: number, files: string[], filesRoot: string, options: UploadArtifactOptions): Promise<{ id: number, size: number }>
   deleteId(id: number): Promise
   deleteIdFrom(owner: string, repo: string, id: number): Promise
   downloadId(id: number, path: string): Promise
