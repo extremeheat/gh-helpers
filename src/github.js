@@ -106,9 +106,11 @@ function mod (githubContext, githubToken) {
     const filePaths = []
     for (const file in fileContents) {
       const path = tempFolder + '/' + file
+      console.log('writing', [fileContents[file]], to[path])
       fs.writeFileSync(path, fileContents[file])
       filePaths.push(path)
     }
+    console.log(tempFolder, 'contents', fs.readdirSync(tempFolder, { recursive: true }))
     const { id, size } = await uploadArtifact(name, filePaths, options)
     fs.rmdirSync(tempFolder, { recursive: true })
     return { id, size }
