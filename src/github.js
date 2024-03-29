@@ -106,7 +106,7 @@ function mod (githubContext, githubToken) {
     const filePaths = []
     for (const file in fileContents) {
       const path = tempFolder + '/' + file
-      console.log('writing', [fileContents[file]], to[path])
+      console.log('writing', [fileContents[file]], 'to', [path])
       fs.writeFileSync(path, fileContents[file])
       filePaths.push(path)
     }
