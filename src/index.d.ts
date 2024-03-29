@@ -177,6 +177,8 @@ interface ArtifactsAPI {
   downloadIdFrom(owner: string, repo: string, id: string, path: string): Promise
   list(): Promise<Artifact[]>
   listFrom(): Promise<Artifact[]>
+  readTextArtifact(id: number): Promise<Record<string, Artifact>>
+  readTextArtifactFrom(owner: string, repo: string, id: number): Promise<Record<string, Artifact>>
 }
 
 // If the module is instantiated within Github Actions, all the needed info

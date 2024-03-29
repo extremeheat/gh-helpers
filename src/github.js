@@ -1,4 +1,5 @@
 // const { Octokit } = require('@octokit/rest') // https://github.com/octokit/rest.js
+const fs = require('fs')
 const github = require('@actions/github')
 const core = require('@actions/core')
 const { DefaultArtifactClient } = require('@actions/artifact')
@@ -70,6 +71,29 @@ function mod (githubContext, githubToken) {
       repositoryName: repo,
       path
     })
+  }
+
+  async function _readTextArtifact (id, owner, repo) {
+    const tempFolder = __dirname + '/atemp-' + Date.now() // eslint-disable-line
+    if (owner) {
+      await downloadArtifactIdFrom(owner, repo, id, tempFolder)
+    } else {
+      await downloadArtifactId(id, tempFolder)
+    }
+    const files = {}
+    for (const file of fs.readdirSync(tempFolder)) {
+      files[file] = fs.readFileSync(tempFolder + '/' + file, 'utf8')
+    }
+    fs.rmdirSync(tempFolder, { recursive: true })
+    return files
+  }
+
+  async function readTextArtifact (id) {
+    return _readTextArtifact(id)
+  }
+
+  async function readTextArtifactFrom (owner, repo, id) {
+    return _readTextArtifact(id, owner, repo)
   }
 
   async function listArtifacts () {
@@ -447,7 +471,9 @@ function mod (githubContext, githubToken) {
       downloadId: downloadArtifactId,
       downloadIdFrom: downloadArtifactIdFrom,
       list: listArtifacts,
-      listFrom: listArtifactsFrom
+      listFrom: listArtifactsFrom,
+      readTextArtifact,
+      readTextArtifactFrom
     },
 
     findIssues,

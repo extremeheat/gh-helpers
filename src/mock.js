@@ -57,7 +57,9 @@ const mock = {
     downloadId: noop,
     downloadIdFrom: noop,
     list: () => [],
-    listFrom: () => []
+    listFrom: () => [],
+    readTextArtifact: noop,
+    readTextArtifactFrom: noop
   },
 
   findIssues: () => [],
