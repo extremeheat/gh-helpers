@@ -51,14 +51,14 @@ interface GithubHelper {
   // Read an option from Github Actions' workflow args
   getInput(name: string, required?: boolean): string;
 
-  findIssues(options: PRLookupOpt): Promise<IssuePRDetail[]>
-  findIssue(options: PRLookupOpt): Promise<IssuePRDetail>
+  findIssues(options: IssuePRLookupOpts): Promise<IssuePRDetail[]>
+  findIssue(options: IssuePRLookupOpts): Promise<IssuePRDetail>
 
   updateIssue(id: number, payload: { body: string }): Promise<void>;
   createIssue(payload: object): Promise<void>;
 
-  findPullRequests(options: PRLookupOpt): Promise<IssuePRDetail[]>;
-  findPullRequest(options: PRLookupOpt): Promise<IssuePRDetail>;
+  findPullRequests(options: IssuePRLookupOpts): Promise<IssuePRDetail[]>;
+  findPullRequest(options: IssuePRLookupOpts): Promise<IssuePRDetail>;
 
   getComments(id: number): Promise<Comment[]>;
 
@@ -111,8 +111,22 @@ interface GithubHelper {
     // Name of the workflow file that was triggered
     workflowName: string
   }) => void): void;
+
+  artifacts: ArtifactsAPI
 }
 
+interface ArtifactsAPI {
+  upload(name: number, files: string[], options: object): Promise<{ id: number, size: number }>
+  deleteId(id: number): Promise
+  deleteIdFrom(owner: string, repo: string, id: number): Promise
+  downloadId(id: number, path: string): Promise
+  downloadIdFrom(owner: string, repo: string, id: string, path: string): Promise
+  list(): Promise<Artifact[]>
+  listFrom(): Promise<Artifact[]>
+  readTextArtifact(id: number): Promise<Record<string, Artifact>>
+  readTextArtifactFrom(owner: string, repo: string, id: number): Promise<Record<string, Artifact>>
+  writeTextArtifact(name: string, fileContents: Record<string, string>): Promise<{ id: number, size: number }>
+}
 // If the module is instantiated within Github Actions, all the needed info
 // is avaliable over environment variables
 function loader(): GithubHelper
