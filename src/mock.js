@@ -1,3 +1,4 @@
+/* eslint-disable no-sequences */
 const noop = () => { }
 // mock a bunch of things for testing locally -- https://github.com/actions/toolkit/issues/71
 process.env.GITHUB_REPOSITORY = 'PrismarineJS/bedrock-protocol'
@@ -33,6 +34,9 @@ const getRecentCommitsInRepo = () => [
     url: 'https://github.com/PrismarineJS/mineflayer/commit/c6e8aa895fd112876c0733f0b99bc3c2e3efc7c0'
   }
 ]
+
+const artifacts = []
+
 const mock = {
   mock: true,
   getRepoDetails: () => ({
@@ -51,16 +55,16 @@ const mock = {
   getInput: noop,
 
   artifacts: {
-    upload: () => ({ id: 1, size: 0 }),
-    deleteId: noop,
-    deleteIdFrom: noop,
+    upload: () => artifacts.push({ id: artifacts.length, size: 0 }),
+    deleteId: () => { artifacts.length = 0 },
+    deleteIdFrom: () => { artifacts.length = 0 },
     downloadId: noop,
     downloadIdFrom: noop,
-    list: () => [],
-    listFrom: () => [],
-    readTextArtifact: noop,
+    list: () => artifacts,
+    listFrom: () => artifacts,
+    readTextArtifact: (id) => artifacts.find(e => id === e.id).data,
     readTextArtifactFrom: noop,
-    writeTextArtifact: noop
+    writeTextArtifact: (name, data) => (artifacts.push({ id: artifacts.length, name, data, size: 0 }), artifacts[artifacts.length - 1])
   },
 
   findIssues: () => [],

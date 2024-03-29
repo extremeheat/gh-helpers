@@ -21,8 +21,6 @@ jobs:
     - name: Expose GitHub Runtime
       uses: crazy-max/ghaction-github-runtime@v3
     - run: npm install
-    # Dump all the environment variables
-    - run: printenv
     - run: npm test
       env:
-        GITHUB_TOKEN: ${{ secrets.PAT_PASSWORD }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

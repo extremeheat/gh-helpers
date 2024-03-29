@@ -44,7 +44,10 @@ function mod (githubContext, githubToken) {
 
   // Artifacts
   async function uploadArtifact (name, files, options) {
-    const { id, size } = await artifact.uploadArtifact(name, files, options)
+    const { id, size } = await artifact.uploadArtifact(name, files, {
+      retentionDays: 1,
+      ...options
+    })
     return { id, size }
   }
 
@@ -96,12 +99,12 @@ function mod (githubContext, githubToken) {
     return _readTextArtifact(id, owner, repo)
   }
 
-  async function writeTextArtifact (name, fileContents) {
+  async function writeTextArtifact (name, fileContents, options) {
     const tempFolder = __dirname + '/atemp-' + Date.now() // eslint-disable-line
     for (const file in fileContents) {
       fs.writeFileSync(tempFolder, fileContents[file])
     }
-    const { id, size } = await uploadArtifact(name, tempFolder)
+    const { id, size } = await uploadArtifact(name, tempFolder, options)
     fs.rmdirSync(tempFolder, { recursive: true })
     return { id, size }
   }

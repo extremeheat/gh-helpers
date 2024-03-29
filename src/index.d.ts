@@ -80,6 +80,36 @@ interface Artifact {
    */
   createdAt?: Date;
 }
+// https://github.com/actions/toolkit/blob/59e9d284e9f7d2bd1a24d2c2e83f19923caaac30/packages/artifact/src/internal/shared/interfaces.ts#L39
+interface UploadArtifactOptions {
+  /**
+   * Duration after which artifact will expire in days.
+   *
+   * By default artifact expires after 90 days:
+   * https://docs.github.com/en/actions/configuring-and-managing-workflows/persisting-workflow-data-using-artifacts#downloading-and-deleting-artifacts-after-a-workflow-run-is-complete
+   *
+   * Use this option to override the default expiry.
+   *
+   * Min value: 1
+   * Max value: 90 unless changed by repository setting
+   *
+   * If this is set to a greater value than the retention settings allowed, the retention on artifacts
+   * will be reduced to match the max value allowed on server, and the upload process will continue. An
+   * input of 0 assumes default retention setting.
+   */
+  retentionDays?: number
+  /**
+   * The level of compression for Zlib to be applied to the artifact archive.
+   * The value can range from 0 to 9:
+   * - 0: No compression
+   * - 1: Best speed
+   * - 6: Default compression (same as GNU Gzip)
+   * - 9: Best compression
+   * Higher levels will result in better compression, but will take longer to complete.
+   * For large files that are not easily compressed, a value of 0 is recommended for significantly faster uploads.
+   */
+  compressionLevel?: number
+}
 
 interface GithubHelper {
   repoURL: string;
@@ -170,7 +200,7 @@ interface GithubHelper {
 }
 
 interface ArtifactsAPI {
-  upload(name: number, files: string[], options: object): Promise<{ id: number, size: number }>
+  upload(name: number, files: string[], options: UploadArtifactOptions): Promise<{ id: number, size: number }>
   deleteId(id: number): Promise
   deleteIdFrom(owner: string, repo: string, id: number): Promise
   downloadId(id: number, path: string): Promise
@@ -179,7 +209,7 @@ interface ArtifactsAPI {
   listFrom(): Promise<Artifact[]>
   readTextArtifact(id: number): Promise<Record<string, Artifact>>
   readTextArtifactFrom(owner: string, repo: string, id: number): Promise<Record<string, Artifact>>
-  writeTextArtifact(name: string, fileContents: Record<string, string>): Promise<{ id: number, size: number }>
+  writeTextArtifact(name: string, fileContents: Record<string, string>, options: UploadArtifactOptions): Promise<{ id: number, size: number }>
 }
 
 // If the module is instantiated within Github Actions, all the needed info
