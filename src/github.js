@@ -44,7 +44,6 @@ function mod (githubContext, githubToken) {
 
   // Artifacts
   async function uploadArtifact (name, files, filesRoot, options) {
-    console.log('Uploading artifact', name, files, filesRoot, options)
     const { id, size } = await artifact.uploadArtifact(name, files, filesRoot, {
       retentionDays: 1,
       ...options
@@ -106,11 +105,9 @@ function mod (githubContext, githubToken) {
     const filePaths = []
     for (const file in fileContents) {
       const path = tempFolder + '/' + file
-      console.log('writing', [fileContents[file]], 'to', [path])
       fs.writeFileSync(path, fileContents[file])
       filePaths.push(path)
     }
-    console.log(tempFolder, 'contents', fs.readdirSync(tempFolder, { recursive: true }))
     const { id, size } = await uploadArtifact(name, filePaths, tempFolder, options)
     fs.rmdirSync(tempFolder, { recursive: true })
     return { id, size }
