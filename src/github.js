@@ -117,15 +117,17 @@ function mod (githubContext, githubToken) {
   }
 
   async function listArtifacts () {
-    return await artifact.listArtifacts()
+    const ret = await artifact.listArtifacts()
+    return ret.artifacts
   }
 
   async function listArtifactsFrom (owner, repo) {
-    return await artifact.listArtifacts({
+    const ret = await artifact.listArtifacts({
       token,
       repositoryOwner: owner,
       repositoryName: repo
     })
+    return ret.artifacts
   }
 
   // End Artifacts
