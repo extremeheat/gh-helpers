@@ -175,7 +175,7 @@ interface GithubHelper {
   getDiffForCommit(hash: string): Promise<{ diff: string, url: string }>
 
   // Sends a workflow dispatch request to the specified owner/repo's $workflow.yml file, with the specified inputs
-  sendWorkflowDispatch(arg: { owner: string, repo: string, workflow: string, branch: string, inputs: Record<string, string> }): void
+  sendWorkflowDispatch(arg: { owner?: string, repo?: string, workflow: string, branch: string, inputs: Record<string, string> }): void
 
   // Events
 

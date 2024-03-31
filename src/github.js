@@ -418,8 +418,8 @@ function mod (githubContext, githubToken) {
   // Send a workflow dispatch event to a repository in the specified owner
   function sendWorkflowDispatch ({ owner, repo, branch, workflow, inputs }) {
     return octokit.rest.actions.createWorkflowDispatch({
-      owner,
-      repo,
+      owner: owner || context.repo.owner,
+      repo: repo || context.repo.repo,
       workflow_id: workflow,
       ref: branch || 'main',
       inputs
