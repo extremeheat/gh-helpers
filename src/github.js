@@ -1,6 +1,9 @@
 // const { Octokit } = require('@octokit/rest') // https://github.com/octokit/rest.js
+const fs = require('fs')
 const github = require('@actions/github')
 const core = require('@actions/core')
+const { DefaultArtifactClient } = require('@actions/artifact')
+
 // const runningOverActions = !!process.env.GITHUB_ACTIONS
 
 function mod (githubContext, githubToken) {
@@ -23,6 +26,7 @@ function mod (githubContext, githubToken) {
   // Full context object: https://github.com/actions/toolkit/blob/main/packages/github/src/context.ts
   const fullName = context.repo.fullName || (context.repo.owner + '/' + context.repo.repo)
 
+  const artifact = new DefaultArtifactClient()
   const getInput = (name, required = false) => core.getInput(name, { required })
 
   let currentUserData
@@ -37,6 +41,93 @@ function mod (githubContext, githubToken) {
     }
     return currentUserData
   }
+
+  // Artifacts
+  async function uploadArtifact (name, files, filesRoot, options) {
+    const { id, size } = await artifact.uploadArtifact(name, files, filesRoot, {
+      retentionDays: 1,
+      ...options
+    })
+    return { id, size }
+  }
+
+  async function deleteArtifactId (id) {
+    return await artifact.deleteArtifact(id)
+  }
+
+  async function deleteArtifactIdFrom (owner, repo, id) {
+    return await artifact.deleteArtifact(id, {
+      token,
+      repositoryOwner: owner,
+      repositoryName: repo
+    })
+  }
+
+  async function downloadArtifactId (id, path) {
+    return await artifact.downloadArtifact(id, { path })
+  }
+
+  async function downloadArtifactIdFrom (owner, repo, id, path) {
+    return await artifact.downloadArtifact(id, {
+      token,
+      repositoryOwner: owner,
+      repositoryName: repo,
+      path
+    })
+  }
+
+  async function _readTextArtifact (id, owner, repo) {
+    const tempFolder = __dirname + '/atemp-' + Date.now() // eslint-disable-line
+    if (owner) {
+      await downloadArtifactIdFrom(owner, repo, id, tempFolder)
+    } else {
+      await downloadArtifactId(id, tempFolder)
+    }
+    const files = {}
+    for (const file of fs.readdirSync(tempFolder)) {
+      files[file] = fs.readFileSync(tempFolder + '/' + file, 'utf8')
+    }
+    fs.rmdirSync(tempFolder, { recursive: true })
+    return files
+  }
+
+  async function readTextArtifact (id) {
+    return _readTextArtifact(id)
+  }
+
+  async function readTextArtifactFrom (owner, repo, id) {
+    return _readTextArtifact(id, owner, repo)
+  }
+
+  async function createTextArtifact (name, fileContents, options) {
+    const tempFolder = __dirname + '/atemp-' + Date.now() // eslint-disable-line
+    fs.mkdirSync(tempFolder, { recursive: true })
+    const filePaths = []
+    for (const file in fileContents) {
+      const path = tempFolder + '/' + file
+      fs.writeFileSync(path, fileContents[file])
+      filePaths.push(path)
+    }
+    const { id, size } = await uploadArtifact(name, filePaths, tempFolder, options)
+    fs.rmdirSync(tempFolder, { recursive: true })
+    return { id, size }
+  }
+
+  async function listArtifacts () {
+    const ret = await artifact.listArtifacts()
+    return ret.artifacts
+  }
+
+  async function listArtifactsFrom (owner, repo) {
+    const ret = await artifact.listArtifacts({
+      token,
+      repositoryOwner: owner,
+      repositoryName: repo
+    })
+    return ret.artifacts
+  }
+
+  // End Artifacts
 
   async function findIssues ({ titleIncludes, number, status, author = currentAuthor }) {
     // https://docs.github.com/en/rest/reference/search#search-issues-and-pull-requests
@@ -391,6 +482,19 @@ function mod (githubContext, githubToken) {
     getRepoDetails,
     getDefaultBranch,
     getInput,
+
+    artifacts: {
+      upload: uploadArtifact,
+      deleteId: deleteArtifactId,
+      deleteIdFrom: deleteArtifactIdFrom,
+      downloadId: downloadArtifactId,
+      downloadIdFrom: downloadArtifactIdFrom,
+      list: listArtifacts,
+      listFrom: listArtifactsFrom,
+      readTextArtifact,
+      readTextArtifactFrom,
+      createTextArtifact
+    },
 
     findIssues,
     findIssue,
