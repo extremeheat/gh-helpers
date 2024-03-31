@@ -64,7 +64,7 @@ const mock = {
     listFrom: () => artifacts,
     readTextArtifact: (id) => artifacts.find(e => id === e.id).data,
     readTextArtifactFrom: noop,
-    writeTextArtifact: (name, data) => (artifacts.push({ id: artifacts.length, name, data, size: 0 }), artifacts[artifacts.length - 1])
+    createTextArtifact: (name, data) => (artifacts.push({ id: artifacts.length, name, data, size: 0 }), artifacts[artifacts.length - 1])
   },
 
   findIssues: () => [],

@@ -20,7 +20,7 @@ describe('basic usage', () => {
   it('artifact read write', async function () {
     // Test upload
     const fileA = { hello: 'world' }
-    const ret = await github.artifacts.writeTextArtifact('ci-test', {
+    const ret = await github.artifacts.createTextArtifact('ci-test', {
       fileA: JSON.stringify(fileA)
     }, {
       retentionDays: 1

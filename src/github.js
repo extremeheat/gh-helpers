@@ -99,7 +99,7 @@ function mod (githubContext, githubToken) {
     return _readTextArtifact(id, owner, repo)
   }
 
-  async function writeTextArtifact (name, fileContents, options) {
+  async function createTextArtifact (name, fileContents, options) {
     const tempFolder = __dirname + '/atemp-' + Date.now() // eslint-disable-line
     fs.mkdirSync(tempFolder, { recursive: true })
     const filePaths = []
@@ -493,7 +493,7 @@ function mod (githubContext, githubToken) {
       listFrom: listArtifactsFrom,
       readTextArtifact,
       readTextArtifactFrom,
-      writeTextArtifact
+      createTextArtifact
     },
 
     findIssues,
