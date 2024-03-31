@@ -1,7 +1,7 @@
 ## 0.2.1
 * [Add artifacts API (#13)](https://github.com/extremeheat/gh-helpers/commit/3f06c1e1d48669c9fda997afdba79159a32e9796) (thanks @extremeheat)
-* [update types fro find issues/find pulls](https://github.com/extremeheat/gh-helpers/commit/029a32e0c4753a16f0a64b352c97095a9cc4e6b2) (thanks @extremeheat)
-* [Update doc](https://github.com/extremeheat/gh-helpers/commit/15af189fa20f073fcac48f3f8f8ca630d0200896) (thanks @extremeheat)
+* [Update types for findIssues/findPullRequests](https://github.com/extremeheat/gh-helpers/commit/029a32e0c4753a16f0a64b352c97095a9cc4e6b2) (thanks @extremeheat)
+* [Update documentation](https://github.com/extremeheat/gh-helpers/commit/15af189fa20f073fcac48f3f8f8ca630d0200896) (thanks @extremeheat)
 
 ## 0.2.0
 Breaking:
