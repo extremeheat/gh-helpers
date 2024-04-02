@@ -1,3 +1,8 @@
+## 0.2.2
+* [Add a getIssue(id) method, correction to findIssues()/findPullRequests() looking up by number](https://github.com/extremeheat/gh-helpers/commit/f4c7ac6c802feecf287daa145d939822cce0a9a0) (thanks @extremeheat)
+* [Update mock.js for findIssue() and getIssue(), pointing to mock object](https://github.com/extremeheat/gh-helpers/commit/8d5686e8264a30c5c55b3d49eedd92bea6b575ac) (thanks @extremeheat)
+* [sendWorkflowDispatch: Add default `owner` and `repo` to pointing to current repo and owner](https://github.com/extremeheat/gh-helpers/commit/78d54b816dbde1db929548641a3c79d3029e8948) (thanks @extremeheat)
+
 ## 0.2.1
 * [Add artifacts API (#13)](https://github.com/extremeheat/gh-helpers/commit/3f06c1e1d48669c9fda997afdba79159a32e9796) (thanks @extremeheat)
 * [Update types for findIssues/findPullRequests](https://github.com/extremeheat/gh-helpers/commit/029a32e0c4753a16f0a64b352c97095a9cc4e6b2) (thanks @extremeheat)
