@@ -37,6 +37,19 @@ const getRecentCommitsInRepo = () => [
 
 const artifacts = []
 
+function findIssue () {
+  return {
+    state: 'open',
+    number: 1,
+    title: 'test',
+    url: 'http://github.com/demo/demo/issues/1',
+    body: 'test',
+    created: new Date().toISOString(),
+    isOpen: true,
+    isClosed: false
+  }
+}
+
 const mock = {
   mock: true,
   getRepoDetails: () => ({
@@ -68,16 +81,8 @@ const mock = {
   },
 
   findIssues: () => [],
-  findIssue: () => ({
-    state: 'open',
-    number: 1,
-    title: 'test',
-    url: 'http://github.com/demo/demo/issues/1',
-    body: 'test',
-    created: new Date().toISOString(),
-    isOpen: true,
-    isClosed: false
-  }),
+  findIssue: findIssue,
+  getIssue: findIssue,
 
   updateIssue: noop,
   createIssue: noop,

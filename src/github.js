@@ -130,10 +130,12 @@ function mod (githubContext, githubToken) {
   // End Artifacts
 
   async function findIssues ({ titleIncludes, number, status, author = currentAuthor }) {
+    if (number) {
+      return [await getIssue(number)]
+    }
     // https://docs.github.com/en/rest/reference/search#search-issues-and-pull-requests
     let q = `is:issue repo:${fullName}`
     if (titleIncludes) q += ` in:title ${titleIncludes}`
-    if (number) q += ` number:${number}`
     if (author) q += ` author:${author}`
     if (status) q += ` is:${status}`
     debug(`Searching issues with query [${q}]`)
@@ -258,10 +260,12 @@ function mod (githubContext, githubToken) {
     author = currentAuthor,
     status = 'open'
   }) {
+    if (number) {
+      return [await getPullRequest(number)]
+    }
     // https://docs.github.com/en/rest/reference/search#search-issues-and-pull-requests
     let q = `is:pr repo:${fullName}`
     if (titleIncludes) q += ` in:title ${titleIncludes}`
-    if (number) q += ` number:${number}`
     if (author) q += ` author:${author}`
     if (status) q += ` is:${status}`
     debug(`Searching issues with query [${q}]`)
@@ -310,6 +314,28 @@ function mod (githubContext, githubToken) {
       url: comment.html_url,
       role: comment.author_association
     }))
+  }
+
+  async function getIssue (id, includeComments = false) {
+    const { data } = await octokit.rest.issues.get({
+      ...context.repo,
+      issue_number: id
+    })
+
+    if (includeComments) {
+      data.comments = await getComments(id)
+    }
+
+    return {
+      comments: data.comments || [],
+      title: data.title,
+      body: data.body,
+      state: data.state,
+      number: data.number,
+      author: data.user.login,
+      created: data.created_at,
+      url: data.html_url
+    }
   }
 
   async function getPullRequest (id, includeComments = false) {
@@ -498,6 +524,7 @@ function mod (githubContext, githubToken) {
 
     findIssues,
     findIssue,
+    getIssue,
     getComments,
 
     findPullRequests,

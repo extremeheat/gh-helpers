@@ -53,6 +53,7 @@ interface GithubHelper {
 
   findIssues(options: IssuePRLookupOpts): Promise<IssuePRDetail[]>
   findIssue(options: IssuePRLookupOpts): Promise<IssuePRDetail>
+  getIssue(id: number): Promise<IssuePRDetail>
 
   updateIssue(id: number, payload: { body: string }): Promise<void>;
   createIssue(payload: object): Promise<void>;
