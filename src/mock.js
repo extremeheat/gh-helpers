@@ -68,7 +68,16 @@ const mock = {
   },
 
   findIssues: () => [],
-  findIssue: noop,
+  findIssue: () => ({
+    state: 'open',
+    number: 1,
+    title: 'test',
+    url: 'http://github.com/demo/demo/issues/1',
+    body: 'test',
+    created: new Date().toISOString(),
+    isOpen: true,
+    isClosed: false
+  }),
 
   updateIssue: noop,
   createIssue: noop,
