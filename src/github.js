@@ -87,7 +87,7 @@ function mod (githubContext, githubToken) {
     for (const file of fs.readdirSync(tempFolder)) {
       files[file] = fs.readFileSync(tempFolder + '/' + file, 'utf8')
     }
-    fs.rmdirSync(tempFolder, { recursive: true })
+    fs.rmSync(tempFolder, { recursive: true })
     return files
   }
 
