@@ -111,6 +111,11 @@ interface GithubHelper {
   // Sends a workflow dispatch request to the specified owner/repo's $workflow.yml file, with the specified inputs
   sendWorkflowDispatch(arg: { owner?: string, repo?: string, workflow: string, branch: string, inputs: Record<string, string> }): Promise<unknown>
 
+  // Check if a repo exists under the specific repo ID (like `microsoft/typescript`). If no slash is included (like `typescript`), assumes the current org.
+  checkRepoExists(id: string): Promise<boolean>
+  checkRepoExists(id: [owner, repo]): Promise<boolean>
+  checkRepoExists(id: { owner, repo }): Promise<boolean>
+
   // Events
 
   onRepoComment(fn: (payload: {

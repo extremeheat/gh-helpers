@@ -506,6 +506,18 @@ function mod (githubContext, githubToken) {
     }
   }
 
+  async function checkRepoExists (id) {
+    if (Array.isArray(id)) id = id.join('/')
+    else if (typeof id === 'object') id = id.owner + '/' + id.repo
+    else if (typeof id === 'string' && !id.includes('/')) id = context.repo.owner + '/' + id
+    try {
+      await fetch('https://api.github.com/repos/' + id)
+      return true
+    } catch {
+      return false
+    }
+  }
+
   const repoURL = context.payload?.repository.html_url ?? `https://github.com/${context.repo.owner}/${context.repo.repo}`
 
   function using ({ owner = context.repo.owner, repo }) {
@@ -562,6 +574,7 @@ function mod (githubContext, githubToken) {
     onWorkflowDispatch,
     repoURL,
 
+    checkRepoExists,
     using
   }
 }

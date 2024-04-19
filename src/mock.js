@@ -110,8 +110,7 @@ const mock = {
   onWorkflowDispatch: noop,
   repoURL: 'https://github.com/' + process.env.GITHUB_REPOSITORY,
 
-  using () {
-    return mock
-  }
+  checkRepoExists: () => true,
+  using: () => mock
 }
 module.exports = () => mock
