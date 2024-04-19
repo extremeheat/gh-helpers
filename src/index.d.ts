@@ -1,3 +1,4 @@
+/// <reference path='./github-rest-api.d.ts' />
 // Core methods
 
 type Comment = {
@@ -26,27 +27,6 @@ type FullPRData = {
   comments?: Comment[]
 };
 
-type RepoCommentPayload = {
-  role: string;
-  body: string;
-  type: 'pull' | 'issue';
-  triggerPullMerged: boolean;
-  issueAuthor: string;
-  triggerUser: string;
-  triggerURL: string;
-  triggerIssueId: number;
-  triggerCommentId: number;
-  isAuthor: boolean;
-};
-
-type UpdatedPRPayload = {
-  id: number;
-  changeType: 'title' | 'body' | 'unknown';
-  title: { old?: string; now: string };
-  createdByUs: boolean;
-  isOpen: boolean;
-};
-
 type IssuePRLookupOpts = { titleIncludes?: string, author?: string, status?: string, number?: number }
 type IssuePRDetail = {
   state: string,
@@ -59,56 +39,6 @@ type IssuePRDetail = {
   created: string,
   isOpen: boolean,
   isClosed: boolean
-}
-
-// https://github.com/extremeheat/gh-helpers/blob/art/node_modules/%40actions/artifact/lib/internal/shared/interfaces.d.ts#L96
-interface Artifact {
-  /**
-   * The name of the artifact
-   */
-  name: string;
-  /**
-   * The ID of the artifact
-   */
-  id: number;
-  /**
-   * The size of the artifact in bytes
-   */
-  size: number;
-  /**
-   * The time when the artifact was created
-   */
-  createdAt?: Date;
-}
-// https://github.com/actions/toolkit/blob/59e9d284e9f7d2bd1a24d2c2e83f19923caaac30/packages/artifact/src/internal/shared/interfaces.ts#L39
-interface UploadArtifactOptions {
-  /**
-   * Duration after which artifact will expire in days.
-   *
-   * By default artifact expires after 90 days:
-   * https://docs.github.com/en/actions/configuring-and-managing-workflows/persisting-workflow-data-using-artifacts#downloading-and-deleting-artifacts-after-a-workflow-run-is-complete
-   *
-   * Use this option to override the default expiry.
-   *
-   * Min value: 1
-   * Max value: 90 unless changed by repository setting
-   *
-   * If this is set to a greater value than the retention settings allowed, the retention on artifacts
-   * will be reduced to match the max value allowed on server, and the upload process will continue. An
-   * input of 0 assumes default retention setting.
-   */
-  retentionDays?: number
-  /**
-   * The level of compression for Zlib to be applied to the artifact archive.
-   * The value can range from 0 to 9:
-   * - 0: No compression
-   * - 1: Best speed
-   * - 6: Default compression (same as GNU Gzip)
-   * - 9: Best compression
-   * Higher levels will result in better compression, but will take longer to complete.
-   * For large files that are not easily compressed, a value of 0 is recommended for significantly faster uploads.
-   */
-  compressionLevel?: number
 }
 
 interface GithubHelper {
@@ -183,9 +113,29 @@ interface GithubHelper {
 
   // Events
 
-  onRepoComment(fn: (payload: RepoCommentPayload, rawPayload: any) => void): void;
-  onUpdatedPR(fn: (payload: UpdatedPRPayload) => void): void;
+  onRepoComment(fn: (payload: {
+    repository: Repository,
+    role: string;
+    body: string;
+    type: 'pull' | 'issue';
+    triggerPullMerged: boolean;
+    issueAuthor: string;
+    triggerUser: string;
+    triggerURL: string;
+    triggerIssueId: number;
+    triggerCommentId: number;
+    isAuthor: boolean;
+  }, rawPayload: any) => void): void;
+  onUpdatedPR(fn: (payload: {
+    repository: Repository,
+    id: number;
+    changeType: 'title' | 'body' | 'unknown';
+    title: { old?: string; now: string };
+    createdByUs: boolean;
+    isOpen: boolean;
+  }) => void, rawPayload: any): void;
   onWorkflowDispatch(fn: (payload: {
+    repository: Repository,
     // The inputs that were passed to the workflow
     inputs: Record<string, string>,
     // The branch ref that the workflow was triggered on
@@ -198,7 +148,7 @@ interface GithubHelper {
     workflowId: string,
     // Name of the workflow file that was triggered
     workflowName: string
-  }) => void): void;
+  }) => void, rawPayload: any): void;
 
   artifacts: ArtifactsAPI
 }
