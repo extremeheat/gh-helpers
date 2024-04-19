@@ -379,7 +379,7 @@ function mod (githubContext, githubToken) {
     }))
   }
 
-  async function waitForPullRequestChecks (number, maxWait = 30000) {
+  async function waitForPullRequestChecks (number, maxWait = 60000) {
     const start = Date.now()
     let checks
     do {
@@ -390,7 +390,7 @@ function mod (githubContext, githubToken) {
           return checks
         }
       }
-      await new Promise(resolve => setTimeout(resolve, 5000))
+      await new Promise(resolve => setTimeout(resolve, 10000))
     } while (Date.now() - start < maxWait)
     return checks
   }
