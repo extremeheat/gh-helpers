@@ -1,5 +1,4 @@
 ## 0.2.4
-* [Update types](https://github.com/extremeheat/gh-helpers/commit/d6873a9c45743c5e20114c76109ab398ac8a2c95) (thanks @extremeheat)
 * [Expose repository data on event hooks](https://github.com/extremeheat/gh-helpers/commit/1524be7140658c2ed00b3e3d8c1eb56565cab3b2) (thanks @extremeheat)
 
 ## 0.2.3
