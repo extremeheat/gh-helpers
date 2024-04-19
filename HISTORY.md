@@ -1,3 +1,7 @@
+## 0.2.3
+* [Add `using` method for returning helper instance on different repo (#16)](https://github.com/extremeheat/gh-helpers/commit/7d23b5ba95309e00e98a18d212c6cc776e655c13) (thanks @extremeheat)
+* [Fix deprecation warning in rmdirSync](https://github.com/extremeheat/gh-helpers/commit/62ff4fdadbc310ab42db90f893c0f3336beca863) (thanks @extremeheat)
+
 ## 0.2.2
 * [Add a getIssue(id) method, correction to findIssues()/findPullRequests() looking up by number](https://github.com/extremeheat/gh-helpers/commit/f4c7ac6c802feecf287daa145d939822cce0a9a0) (thanks @extremeheat)
 * [Update mock.js for findIssue() and getIssue(), pointing to mock object](https://github.com/extremeheat/gh-helpers/commit/8d5686e8264a30c5c55b3d49eedd92bea6b575ac) (thanks @extremeheat)
