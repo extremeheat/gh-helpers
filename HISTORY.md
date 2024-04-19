@@ -1,5 +1,4 @@
 ## 0.2.3
-* [Update README.md](https://github.com/extremeheat/gh-helpers/commit/2678f818e6c173eac8249fe4f3aec07eb3e5203c) (thanks @extremeheat)
 * [Add `using` method for returning helper instance on different repo (#16)](https://github.com/extremeheat/gh-helpers/commit/7d23b5ba95309e00e98a18d212c6cc776e655c13) (thanks @extremeheat)
 * [Fix deprecation warning in rmdirSync](https://github.com/extremeheat/gh-helpers/commit/62ff4fdadbc310ab42db90f893c0f3336beca863) (thanks @extremeheat)
 
