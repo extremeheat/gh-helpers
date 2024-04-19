@@ -1,3 +1,6 @@
+## 0.2.5
+* [Add a checkRepoExists method](https://github.com/extremeheat/gh-helpers/commit/9fac02b2105299fa7fe310eaeedcecc68187595c) (thanks @extremeheat)
+
 ## 0.2.4
 * [Expose repository data on event hooks](https://github.com/extremeheat/gh-helpers/commit/1524be7140658c2ed00b3e3d8c1eb56565cab3b2) (thanks @extremeheat)
 
