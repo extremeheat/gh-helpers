@@ -503,6 +503,10 @@ function mod (githubContext, githubToken) {
 
   const repoURL = context.payload?.repository.html_url ?? `https://github.com/${context.repo.owner}/${context.repo.repo}`
 
+  function using ({ owner = context.repo.owner, repo }) {
+    return mod({ repo: { owner, repo } }, githubToken)
+  }
+
   return {
     getCurrentUser,
     getRepoDetails,
@@ -551,7 +555,9 @@ function mod (githubContext, githubToken) {
     onRepoComment,
     onUpdatedPR,
     onWorkflowDispatch,
-    repoURL
+    repoURL,
+
+    using
   }
 }
 module.exports = mod

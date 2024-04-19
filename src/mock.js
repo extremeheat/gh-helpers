@@ -81,7 +81,7 @@ const mock = {
   },
 
   findIssues: () => [],
-  findIssue: findIssue,
+  findIssue,
   getIssue: findIssue,
 
   updateIssue: noop,
@@ -108,6 +108,10 @@ const mock = {
   onRepoComment: noop,
   onUpdatedPR: noop,
   onWorkflowDispatch: noop,
-  repoURL: 'https://github.com/' + process.env.GITHUB_REPOSITORY
+  repoURL: 'https://github.com/' + process.env.GITHUB_REPOSITORY,
+
+  using () {
+    return mock
+  }
 }
 module.exports = () => mock
