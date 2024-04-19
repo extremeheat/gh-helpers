@@ -114,7 +114,10 @@ interface GithubHelper {
   // Events
 
   onRepoComment(fn: (payload: {
+    // Full data for the repo that triggered the workflow
     repository: Repository,
+    // The full name fro the repo that the workflow ran on (owner/repo)
+    repo: string,
     role: string;
     body: string;
     type: 'pull' | 'issue';
@@ -127,7 +130,10 @@ interface GithubHelper {
     isAuthor: boolean;
   }, rawPayload: any) => void): void;
   onUpdatedPR(fn: (payload: {
+    // Full data for the repo that triggered the workflow
     repository: Repository,
+    // The full name fro the repo that the workflow ran on (owner/repo)
+    repo: string,
     id: number;
     changeType: 'title' | 'body' | 'unknown';
     title: { old?: string; now: string };
@@ -135,13 +141,14 @@ interface GithubHelper {
     isOpen: boolean;
   }) => void, rawPayload: any): void;
   onWorkflowDispatch(fn: (payload: {
+    // Full data for the repo that triggered the workflow
     repository: Repository,
+    // The full name fro the repo that the workflow ran on (owner/repo)
+    repo: string,
     // The inputs that were passed to the workflow
     inputs: Record<string, string>,
     // The branch ref that the workflow was triggered on
     ref: string,
-    // The repository that the workflow ran on (owner/repo)
-    repo: string,
     // Who triggered the workflow
     sender: string,
     // Full path to workflow that was triggered

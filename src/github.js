@@ -457,6 +457,7 @@ function mod (githubContext, githubToken) {
     if (payload.comment && payload.issue) {
       fn({
         repository: payload.repository,
+        repo: payload.repository.full_name,
         role: payload.comment.author_association,
         body: payload.comment.body,
         type: payload.issue.pull_request ? 'pull' : 'issue',
@@ -476,6 +477,7 @@ function mod (githubContext, githubToken) {
     if (payload.action === 'edited' && payload.pull_request && payload.changes) {
       fn({
         repository: payload.repository,
+        repo: payload.repository.full_name,
         id: payload.pull_request.number,
         changeType: payload.changes.title ? 'title' : payload.changes.body ? 'body' : 'unknown',
         title: {
@@ -494,9 +496,9 @@ function mod (githubContext, githubToken) {
     if (context.eventName === 'workflow_dispatch') {
       fn({
         repository: payload.repository,
+        repo: payload.repository.full_name,
         inputs: payload.inputs,
         ref: payload.ref,
-        repo: payload.repository.full_name,
         workflowId: payload.workflow,
         workflowName: payload.workflow.split('/').pop(),
         sender: payload.sender.login
