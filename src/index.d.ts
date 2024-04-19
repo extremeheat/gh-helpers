@@ -1,4 +1,4 @@
-/// <reference path='./github-rest-api.d.ts' />
+import { Repository, Artifact, UploadArtifactOptions } from "./github-rest-api";
 // Core methods
 
 type Comment = {

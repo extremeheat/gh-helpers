@@ -83,8 +83,7 @@ export interface Repository {
   source: Repository;
 }
 
-// https://github.com/extremeheat/gh-helpers/blob/art/node_modules/%40actions/artifact/lib/internal/shared/interfaces.d.ts#L96
-interface Artifact {
+export interface Artifact {
   /**
    * The name of the artifact
    */
@@ -103,7 +102,7 @@ interface Artifact {
   createdAt?: Date;
 }
 // https://github.com/actions/toolkit/blob/59e9d284e9f7d2bd1a24d2c2e83f19923caaac30/packages/artifact/src/internal/shared/interfaces.ts#L39
-interface UploadArtifactOptions {
+export interface UploadArtifactOptions {
   /**
    * Duration after which artifact will expire in days.
    *
