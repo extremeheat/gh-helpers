@@ -1,3 +1,6 @@
+## 0.2.4
+* [Expose repository data on event hooks](https://github.com/extremeheat/gh-helpers/commit/1524be7140658c2ed00b3e3d8c1eb56565cab3b2) (thanks @extremeheat)
+
 ## 0.2.3
 * [Add `using` method for returning helper instance on different repo (#16)](https://github.com/extremeheat/gh-helpers/commit/7d23b5ba95309e00e98a18d212c6cc776e655c13) (thanks @extremeheat)
 * [Fix deprecation warning in rmdirSync](https://github.com/extremeheat/gh-helpers/commit/62ff4fdadbc310ab42db90f893c0f3336beca863) (thanks @extremeheat)
