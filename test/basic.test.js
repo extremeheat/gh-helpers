@@ -12,6 +12,11 @@ describe('basic usage', () => {
     assert(defBranch === 'main' || defBranch === 'master')
   })
 
+  it('test using', async function () {
+    const recentCommits = await github.using({ owner: 'extremeheat', repo: 'LXL' }).getRecentCommitsInRepo(20)
+    console.log('Recent commits in extremeheat/LXL', recentCommits)
+  })
+
   it('listing artifacts', async function () {
     const artifacts = await github.artifacts.list()
     console.log('List of Artifacts on Repo', artifacts)
