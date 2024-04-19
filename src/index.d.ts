@@ -41,6 +41,21 @@ type IssuePRDetail = {
   isClosed: boolean
 }
 
+type PRCheck = {
+  name: string,
+  status: "queued" | "in_progress" | "completed",
+  conclusion:
+    | "success"
+    | "failure"
+    | "neutral"
+    | "cancelled"
+    | "skipped"
+    | "timed_out"
+    | "action_required"
+    | null,
+  url: string
+}
+
 interface GithubHelper {
   // Return a new GithubHelper instance to run methods against a different repo
   using(opts: { owner?: string, repo: string }): GithubHelper
@@ -80,8 +95,12 @@ interface GithubHelper {
 
   getComments(id: number): Promise<Comment[]>;
 
-  // Get full details about a PR by ID
+  // Get full details about a PR by its number
   getPullRequest(id: number, includeComments?: boolean): Promise<FullPRData>;
+  // Returns the status of all the workflows that are running against the PR (CI/tests, other actions)
+  getPullRequestChecks(id: number): Promise<PRCheck[]>
+  // Waits for all of the PR checks to be complete (upto specified timeout), then return all the checks
+  waitForPullRequestChecks(id: number, timeout: number): Promise<PRCheck[]>
 
   updatePull(id: number, payload: { title?: string; body?: string }): Promise<void>;
   createPullRequest(title: string, body: string, fromBranch: string, intoBranch?: string): Promise<{ number: number, url: string }>;
