@@ -112,6 +112,9 @@ interface UploadArtifactOptions {
 }
 
 interface GithubHelper {
+  // Return a new GithubHelper instance to run methods against a different repo
+  using(opts: { owner?: string, repo: string }): GithubHelper
+
   repoURL: string;
   // Gets information about the currently authenticated user (who's PAT is in use)
   getCurrentUser(): Promise<{

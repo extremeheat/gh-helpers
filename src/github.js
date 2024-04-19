@@ -506,7 +506,7 @@ function mod (githubContext, githubToken) {
   function using ({ owner = context.repo.owner, repo }) {
     return mod({ repo: { owner, repo } }, githubToken)
   }
-  
+
   return {
     getCurrentUser,
     getRepoDetails,
