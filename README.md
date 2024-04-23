@@ -24,4 +24,4 @@ const github = require('gh-helpers')({
 
 ### API
 
-See src/index.d.ts for info on the API
+See [src/index.d.ts](src/index.d.ts) for info on the API
