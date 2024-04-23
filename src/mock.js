@@ -90,6 +90,9 @@ const mock = {
   findPullRequests: () => [],
   findPullRequest: noop,
   getPullRequest,
+  getPullRequestChecks: () => [],
+  waitForPullRequestChecks: noop,
+
   updatePull: noop,
   createPullRequest: () => ({ number: 420, url: 'http://example.url/420' }),
   createPullRequestReview: noop,

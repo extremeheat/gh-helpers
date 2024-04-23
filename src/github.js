@@ -366,6 +366,35 @@ function mod (githubContext, githubToken) {
     }
   }
 
+  async function getPullRequestChecks (number) {
+    const { data } = await octokit.rest.checks.listForRef({
+      ...context.repo,
+      ref: `pull/${number}/head`
+    })
+    return data.check_runs.map(check => ({
+      name: check.name,
+      status: check.status,
+      conclusion: check.conclusion,
+      url: check.html_url
+    }))
+  }
+
+  async function waitForPullRequestChecks (number, maxWait = 60000) {
+    const start = Date.now()
+    let checks
+    do {
+      checks = await getPullRequestChecks(number)
+      if (checks.length) {
+        const pending = checks.filter(check => check.status === 'in_progress')
+        if (!pending.length) {
+          return checks
+        }
+      }
+      await new Promise(resolve => setTimeout(resolve, 10000))
+    } while (Date.now() - start < maxWait)
+    return checks
+  }
+
   async function createPullRequest (title, body, fromBranch, intoBranch) {
     if (!intoBranch) {
       intoBranch = await getDefaultBranch()
@@ -551,6 +580,9 @@ function mod (githubContext, githubToken) {
     findPullRequests,
     findPullRequest,
     getPullRequest,
+    getPullRequestChecks,
+    waitForPullRequestChecks,
+
     getDiffForPR,
     getDiffForCommit,
 

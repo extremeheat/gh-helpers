@@ -17,6 +17,12 @@ describe('basic usage', () => {
     console.log('Recent commits in extremeheat/LXL', recentCommits)
   })
 
+  it('PR checks', async function () {
+    // test on https://github.com/extremeheat/gh-helpers/pull/16
+    const checks = await github.waitForPullRequestChecks(16)
+    console.log('PR Checks for #16', checks)
+  })
+
   it('listing artifacts', async function () {
     const artifacts = await github.artifacts.list()
     console.log('List of Artifacts on Repo', artifacts)

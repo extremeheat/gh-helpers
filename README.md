@@ -68,6 +68,10 @@ interface GithubHelper {
 
   // Get full details about a PR by ID
   getPullRequest(id: number, includeComments?: boolean): Promise<FullPRData>;
+  // Returns the status of all the workflows that are running against the PR (CI/tests, other actions)
+  getPullRequestChecks(id: number): Promise<PRCheck[]>
+  // Waits for all of the PR checks to be complete (upto specified timeout), then return all the checks
+  waitForPullRequestChecks(id: number, timeout: number): Promise<PRCheck[]>
 
   updatePull(id: number, payload: { title?: string; body?: string }): Promise<void>;
   createPullRequest(title: string, body: string, fromBranch: string, intoBranch?: string): Promise<{ number: number, url: string }>;
