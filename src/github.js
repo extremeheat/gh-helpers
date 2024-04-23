@@ -486,17 +486,30 @@ function mod (githubContext, githubToken) {
     if (payload.comment && payload.issue) {
       fn({
         repository: payload.repository,
-        repo: payload.repository.full_name,
+        repoId: payload.repository.full_name,
+        type: payload.issue.pull_request ? 'pull' : 'issue',
+
+        // Comment data
+        username: payload.comment.user.login,
         role: payload.comment.author_association,
         body: payload.comment.body,
-        type: payload.issue.pull_request ? 'pull' : 'issue',
-        triggerPullMerged: payload.issue.pull_request?.merged,
-        issueAuthor: payload.issue.user.login,
-        triggerUser: payload.comment.user.login,
-        triggerURL: payload.comment.html_url,
-        triggerIssueId: payload.issue.number,
-        triggerCommentId: payload.comment.id,
-        isAuthor: payload.issue.user.login === payload.comment.user.login
+        id: payload.comment.id,
+        url: payload.comment.html_url,
+        // Helpful checks
+        isAuthor: payload.issue.user.login === payload.comment.user.login,
+
+        issue: {
+          author: payload.issue.user.login,
+          number: payload.issue.number,
+          title: payload.issue.title,
+          url: payload.issue.html_url,
+          state: payload.issue.state,
+          // Helpful checks
+          isClosed: payload.issue.state === 'closed',
+          isOpen: payload.issue.state === 'open',
+          isMerged: payload.issue.pull_request?.merged,
+          isMergeable: payload.issue.pull_request?.mergeable
+        }
       }, payload)
     }
   }
@@ -504,18 +517,35 @@ function mod (githubContext, githubToken) {
   function onUpdatedPR (fn) {
     const payload = context.payload
     if (payload.action === 'edited' && payload.pull_request && payload.changes) {
+      const author = payload.pull_request.user.login
       fn({
         repository: payload.repository,
-        repo: payload.repository.full_name,
-        id: payload.pull_request.number,
+        repoId: payload.repository.full_name,
         changeType: payload.changes.title ? 'title' : payload.changes.body ? 'body' : 'unknown',
+
+        // username is who triggered the event, pr.author is the PR creator
+        username: payload.sender.login,
         title: {
           old: payload.changes.title ? payload.changes.title.from : undefined,
           now: payload.pull_request.title
         },
-        // check if created by Github Actions
-        createdByUs: payload.pull_request.user.login.includes('github-actions'),
-        isOpen: payload.pull_request.state === 'open'
+        // check if change was triggered by our current PAT
+        isTriggeredByUs: (context.actor === payload.sender.login) || (payload.sender.login.includes('github-actions')),
+
+        pr: {
+          number: payload.pull_request.number,
+          title: payload.pull_request.title,
+          body: payload.pull_request.body,
+          url: payload.pull_request.html_url,
+          author,
+          // Helpful checks
+          isAuthor: author === payload.sender.login,
+          isOpen: payload.pull_request.state === 'open',
+          isClosed: payload.pull_request.state === 'closed',
+          isMerged: payload.pull_request.merged,
+          isMergeable: payload.pull_request.mergeable,
+          isCreatedByUs: (author === context.actor) || (author.includes('github-actions'))
+        }
       }, payload)
     }
   }
@@ -525,7 +555,7 @@ function mod (githubContext, githubToken) {
     if (context.eventName === 'workflow_dispatch') {
       fn({
         repository: payload.repository,
-        repo: payload.repository.full_name,
+        repoId: payload.repository.full_name,
         inputs: payload.inputs,
         ref: payload.ref,
         workflowId: payload.workflow,
