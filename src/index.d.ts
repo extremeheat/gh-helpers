@@ -45,18 +45,21 @@ type PRCheck = {
   name: string,
   status: "queued" | "in_progress" | "completed",
   conclusion:
-    | "success"
-    | "failure"
-    | "neutral"
-    | "cancelled"
-    | "skipped"
-    | "timed_out"
-    | "action_required"
-    | null,
+  | "success"
+  | "failure"
+  | "neutral"
+  | "cancelled"
+  | "skipped"
+  | "timed_out"
+  | "action_required"
+  | null,
   url: string
 }
 
 interface GithubHelper {
+  // True if we're running with mock environment
+  mock?: boolean
+
   // Return a new GithubHelper instance to run methods against a different repo
   using(opts: { owner?: string, repo: string }): GithubHelper
 
@@ -136,83 +139,88 @@ interface GithubHelper {
   checkRepoExists(id: { owner: string, repo: string }): Promise<boolean>
 
   // Events
-  onRepoComment(fn: (payload: {
-    // Full data for the repo that triggered the workflow
-    repository: Repository,
-    // The full name fro the repo that the workflow ran on (owner/repo)
-    repoId: string,
-    // The type of issue (pull request or issue)
-    type: 'pull' | 'issue',
-    // Comment data
-    username: string,
-    role: string,
-    body: string,
-    id: number,
-    url: string,
-    // Returns true if the comment author is the same as the issue author
-    isAuthor: boolean,
-    // Underlying issue or PR data
-    issue: {
-      author: string,
-      number: number,
-      title: string,
-      url: string,
-      state: string,
-      // Helpful checks
-      isClosed: boolean,
-      isOpen: boolean,
-      isMerged: boolean,
-      isMergeable: boolean
-    }
-  }, rawPayload: any) => void): void;
-  onUpdatedPR(fn: (payload: {
-    // Full data for the repo that triggered the workflow
-    repository: Repository,
-    // The full name fro the repo that the workflow ran on (owner/repo)
-    repoId: string,
-    // The type of change that was made
-    changeType: 'title' | 'body' | 'unknown',
-    // username is who triggered the event, pr.author is the PR creator
-    username: string,
-    title: {
-      old: string | undefined,
-      now: string
-    },
-    // check if change was triggered by our current PAT
-    isTriggeredByUs: boolean,
-    pr: {
-      number: number,
-      title: string,
-      body: string,
-      url: string,
-      author: string,
-      isAuthor: boolean,
-      isOpen: boolean,
-      isClosed: boolean,
-      isMerged: boolean,
-      isMergeable: boolean,
-      // Check if the PR was created by the current PAT
-      isCreatedByUs: boolean
-    }
-  }) => void, rawPayload: any): void;
-  onWorkflowDispatch(fn: (payload: {
-    // Full data for the repo that triggered the workflow
-    repository: Repository,
-    // The full name fro the repo that the workflow ran on (owner/repo)
-    repoId: string,
-    // The inputs that were passed to the workflow
-    inputs: Record<string, string>,
-    // The branch ref that the workflow was triggered on
-    ref: string,
-    // Who triggered the workflow
-    sender: string,
-    // Full path to workflow that was triggered
-    workflowId: string,
-    // Name of the workflow file that was triggered
-    workflowName: string
-  }) => void, rawPayload: any): void;
+  onRepoComment(fn: (payload: HookOnRepoCommentPayload, rawPayload: any) => void): void;
+  onUpdatedPR(fn: (payload: HookOnUpdatedPRPayload) => void, rawPayload: any): void;
+  onWorkflowDispatch(fn: (payload: HookOnWorkflowDispatchPayload) => void, rawPayload: any): void;
 
   artifacts: ArtifactsAPI
+}
+
+export interface HookOnRepoCommentPayload {
+  // Full data for the repo that triggered the workflow
+  repository: Repository,
+  // The full name fro the repo that the workflow ran on (owner/repo)
+  repoId: string,
+  // The type of issue (pull request or issue)
+  type: 'pull' | 'issue',
+  // Comment data
+  username: string,
+  role: string,
+  body: string,
+  id: number,
+  url: string,
+  // Returns true if the comment author is the same as the issue author
+  isAuthor: boolean,
+  // Underlying issue or PR data
+  issue: {
+    author: string,
+    number: number,
+    title: string,
+    url: string,
+    state: string,
+    // Helpful checks
+    isClosed: boolean,
+    isOpen: boolean,
+    isMerged: boolean,
+    isMergeable: boolean
+  }
+}
+
+export interface HookOnUpdatedPRPayload {
+  // Full data for the repo that triggered the workflow
+  repository: Repository,
+  // The full name fro the repo that the workflow ran on (owner/repo)
+  repoId: string,
+  // The type of change that was made
+  changeType: 'title' | 'body' | 'unknown',
+  // username is who triggered the event, pr.author is the PR creator
+  username: string,
+  title: {
+    old: string | undefined,
+    now: string
+  },
+  // check if change was triggered by our current PAT
+  isTriggeredByUs: boolean,
+  pr: {
+    number: number,
+    title: string,
+    body: string,
+    url: string,
+    author: string,
+    isAuthor: boolean,
+    isOpen: boolean,
+    isClosed: boolean,
+    isMerged: boolean,
+    isMergeable: boolean,
+    // Check if the PR was created by the current PAT
+    isCreatedByUs: boolean
+  }
+}
+export interface HookOnWorkflowDispatchPayload {
+  // Full data for the repo that triggered the workflow
+  repository: Repository,
+  // The full name fro the repo that the workflow ran on (owner/repo)
+  repoId: string,
+  // The inputs that were passed to the workflow
+  inputs: Record<string, string>,
+  // The branch ref that the workflow was triggered on
+  ref: string,
+  // Who triggered the workflow
+  sender: string,
+  // Full path to workflow that was triggered
+  workflowId: string,
+  // Name of the workflow file that was triggered
+  workflowName: string
 }
 
 interface ArtifactsAPI {
