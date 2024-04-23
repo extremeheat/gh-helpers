@@ -1,3 +1,7 @@
+## 0.3.0
+* [Breaking updates to hook callback args (#21)](https://github.com/extremeheat/gh-helpers/commit/56b3d42a21969b93edc8d78fc03b67b4a986bd4a) (thanks @extremeheat)
+* [Add getPullRequestChecks and waitForPullRequestChecks method for PR checks (#20)](https://github.com/extremeheat/gh-helpers/commit/61b5f8476003c1f9d526e3dca7a21f1f3466fbc9) (thanks @extremeheat)
+
 ## 0.2.5
 * [Add a checkRepoExists method](https://github.com/extremeheat/gh-helpers/commit/9fac02b2105299fa7fe310eaeedcecc68187595c) (thanks @extremeheat)
 
