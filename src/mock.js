@@ -97,6 +97,8 @@ const mock = {
   createPullRequest: () => ({ number: 420, url: 'http://example.url/420' }),
   createPullRequestReview: noop,
 
+  mergePullRequest: noop,
+
   close: console.log,
   comment: console.log,
   updateComment: console.log,

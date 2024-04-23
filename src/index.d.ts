@@ -17,13 +17,13 @@ type FullPRData = {
   headBranch: string;
   headRepo: string;
   headCloneURL: string;
-  title?: string;
-  body?: string;
-  state?: string;
-  number?: number;
+  title: string;
+  body: string;
+  state: string;
+  number: number;
   author: string;
   created: string;
-  url?: string;
+  url: string;
   comments?: Comment[]
 };
 
@@ -113,6 +113,8 @@ interface GithubHelper {
     event?: "APPROVE" | "REQUEST_CHANGES" | "COMMENT" | undefined;
     comments?: object[]
   }): Promise<void>;
+
+  mergePullRequest(id: number, payload: { method?: "merge" | "squash" | "rebase"; title?: string; message?: string }): Promise<void>;
 
   close(id: number, reason?: string): Promise<void>;
 

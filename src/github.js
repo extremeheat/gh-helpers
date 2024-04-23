@@ -421,6 +421,17 @@ function mod (githubContext, githubToken) {
     })
   }
 
+  async function mergePullRequest (id, { method, title, message }) {
+    const pr = await octokit.rest.pulls.merge({
+      ...context.repo,
+      pull_number: id,
+      merge_method: method,
+      commit_title: title,
+      commit_message: message
+    })
+    return pr.data
+  }
+
   async function addCommentReaction (commentId, reaction) {
     await octokit.rest.reactions.createForIssueComment({
       ...context.repo,
@@ -622,6 +633,8 @@ function mod (githubContext, githubToken) {
     updatePull,
     createPullRequest,
     createPullRequestReview,
+
+    mergePullRequest,
 
     close,
     comment,
