@@ -54,6 +54,10 @@ type PRCheck = {
   | "action_required"
   | null,
   url: string
+  startedAt?: string
+  completedAt?: string
+  output?: string
+  id: number
 }
 
 interface GithubHelper {
@@ -104,6 +108,10 @@ interface GithubHelper {
   getPullRequestChecks(id: number): Promise<PRCheck[]>
   // Waits for all of the PR checks to be complete (upto specified timeout), then return all the checks
   waitForPullRequestChecks(id: number, timeout: number): Promise<PRCheck[]>
+  // Re-run check on a PR
+  retryPullRequestChecks(checkId: number): Promise<void>
+  // Re-run failed checks on a PR
+  retryPullRequestChecks(prNumber: number): Promise<void>
 
   updatePull(id: number, payload: { title?: string; body?: string }): Promise<void>;
   createPullRequest(title: string, body: string, fromBranch: string, intoBranch?: string): Promise<{ number: number, url: string }>;

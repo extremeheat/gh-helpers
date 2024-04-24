@@ -375,7 +375,11 @@ function mod (githubContext, githubToken) {
       name: check.name,
       status: check.status,
       conclusion: check.conclusion,
-      url: check.html_url
+      url: check.html_url,
+      startedAt: check.started_at,
+      completedAt: check.completed_at,
+      output: check.output,
+      id: check.id
     }))
   }
 
@@ -393,6 +397,22 @@ function mod (githubContext, githubToken) {
       await new Promise(resolve => setTimeout(resolve, 10000))
     } while (Date.now() - start < maxWait)
     return checks
+  }
+
+  async function retryPullRequestCheck (id) {
+    await octokit.rest.checks.rerequestRun({
+      ...context.repo,
+      check_run_id: id
+    })
+  }
+
+  async function retryPullRequestChecks (number) {
+    // Rerun failed checks
+    const checks = await getPullRequestChecks(number)
+    const failed = checks.filter(check => check.conclusion === 'failure')
+    for (const check of failed) {
+      await retryPullRequestCheck(number, check.id)
+    }
   }
 
   async function createPullRequest (title, body, fromBranch, intoBranch) {
@@ -623,6 +643,8 @@ function mod (githubContext, githubToken) {
     getPullRequest,
     getPullRequestChecks,
     waitForPullRequestChecks,
+    retryPullRequestCheck,
+    retryPullRequestChecks,
 
     getDiffForPR,
     getDiffForCommit,
