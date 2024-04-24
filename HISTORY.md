@@ -1,3 +1,10 @@
+## 0.3.1
+* [Update basic.test.js](https://github.com/extremeheat/gh-helpers/commit/fd3940444d060fa9ce4653fc55889d4d3dbe147d) (thanks @extremeheat)
+* [Update waitForPRChecks handling (#24)](https://github.com/extremeheat/gh-helpers/commit/836333c669b43875ae2377112b78307581540662) (thanks @extremeheat)
+* [Add mergePullRequest method (#23)](https://github.com/extremeheat/gh-helpers/commit/2d00e80ee3fcc7926df2809e41b567690a67d68a) (thanks @extremeheat)
+* [Update README.md](https://github.com/extremeheat/gh-helpers/commit/680a78deb59b2dfd671b554643bb3dde2443551d) (thanks @extremeheat)
+* [Update README.md](https://github.com/extremeheat/gh-helpers/commit/9954ea97abde59b1493f0d760a0fb9cfe7b3d3b4) (thanks @extremeheat)
+
 ## 0.3.0
 * [Breaking updates to hook callback args (#21)](https://github.com/extremeheat/gh-helpers/commit/56b3d42a21969b93edc8d78fc03b67b4a986bd4a) (thanks @extremeheat)
 * [Add getPullRequestChecks and waitForPullRequestChecks method for PR checks (#20)](https://github.com/extremeheat/gh-helpers/commit/61b5f8476003c1f9d526e3dca7a21f1f3466fbc9) (thanks @extremeheat)
