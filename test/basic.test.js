@@ -39,7 +39,7 @@ describe('basic usage', () => {
     console.log('Artifact written', ret)
 
     // wait a few seconds
-    await new Promise(resolve => setTimeout(resolve, 20 * 2000))
+    await new Promise(resolve => setTimeout(resolve, 2000))
     const newList = await github.artifacts.list()
     console.log('List of Artifacts on Repo', newList)
     assert(newList.length)
@@ -48,5 +48,5 @@ describe('basic usage', () => {
     const downloaded = await github.artifacts.readTextArtifact(ret.id)
     console.log('Read Artifact', downloaded)
     assert(downloaded.fileA.includes('world'))
-  }).timeout(20 * 9000)
+  }).timeout(9000)
 })
