@@ -404,10 +404,13 @@ function mod (githubContext, githubToken) {
     do {
       checks = await getPullRequestChecks(number)
       if (checks.length) {
-        const pending = checks.filter(check => check.status === 'in_progress')
+        const pending = checks.filter(check => check.status !== 'completed')
         if (!pending.length) {
           return checks
         }
+      } else {
+        // No checks, nothing to wait for
+        return []
       }
       await new Promise(resolve => setTimeout(resolve, 10000))
     } while (Date.now() - start < maxWait)
