@@ -3,6 +3,11 @@ const fs = require('fs')
 const github = require('@actions/github')
 const core = require('@actions/core')
 const { DefaultArtifactClient } = require('@actions/artifact')
+const cp = require('child_process')
+function exec (cmd) {
+  console.log('$ ', cmd)
+  return cp.execSync(cmd, { stdio: 'inherit' })
+}
 
 // const runningOverActions = !!process.env.GITHUB_ACTIONS
 
@@ -40,6 +45,13 @@ function mod (githubContext, githubToken) {
       avatar: user.data.avatar_url
     }
     return currentUserData
+  }
+
+  function _sendRequestWithCURL (url, jsonPayload) {
+    jsonPayload = typeof jsonPayload === 'string' ? jsonPayload : JSON.stringify(jsonPayload)
+    const escapedPayload = jsonPayload.replace(/'/g, "\\'")
+    const cmd = `curl -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${token}" -d '${escapedPayload}' ${url}`
+    exec(cmd)
   }
 
   // Artifacts
@@ -432,6 +444,15 @@ function mod (githubContext, githubToken) {
     }
   }
 
+  function _createPullRequestCURL (title, body, fromBranch, intoBranch) {
+    _sendRequestWithCURL(`https://api.github.com/repos/${context.repo.owner}/${context.repo.repo}/pulls`, JSON.stringify({
+      title,
+      body,
+      head: fromBranch,
+      base: intoBranch
+    }))
+  }
+
   async function createPullRequestReview (id, payload) {
     debug('createPullRequestReview', id, payload)
     await octokit.rest.pulls.createReview({
@@ -510,6 +531,14 @@ function mod (githubContext, githubToken) {
       ref: branch || 'main',
       inputs
     })
+  }
+
+  // For debugging purposes, we can also send a workflow dispatch event using CURL
+  function _sendWorkflowDispatchCURL ({ owner, repo, branch, workflow, inputs }) {
+    _sendRequestWithCURL(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflow}/dispatches`, JSON.stringify({
+      ref: branch || 'main',
+      inputs
+    }))
   }
 
   function onRepoComment (fn) {
@@ -672,7 +701,10 @@ function mod (githubContext, githubToken) {
     repoURL,
 
     checkRepoExists,
-    using
+    using,
+
+    _createPullRequestCURL,
+    _sendWorkflowDispatchCURL
   }
 }
 module.exports = mod
