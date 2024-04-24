@@ -3,6 +3,12 @@ const fs = require('fs')
 const github = require('@actions/github')
 const core = require('@actions/core')
 const { DefaultArtifactClient } = require('@actions/artifact')
+const cp = require('child_process')
+function exec (cmd) {
+  console.log('$ ', cmd)
+  // inherit stderr, capture stdout
+  return cp.execSync(cmd, { stdio: ['inherit', 'pipe'] }).toString()
+}
 
 // const runningOverActions = !!process.env.GITHUB_ACTIONS
 
@@ -40,6 +46,15 @@ function mod (githubContext, githubToken) {
       avatar: user.data.avatar_url
     }
     return currentUserData
+  }
+
+  function _sendRequestWithCURL (url, jsonPayload) {
+    jsonPayload = typeof jsonPayload === 'string' ? jsonPayload : JSON.stringify(jsonPayload)
+    const escapedPayload = jsonPayload.replace(/'/g, "\\'")
+    const cmd = `curl -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${token}" -d '${escapedPayload}' ${url}`
+    const result = exec(cmd)
+    console.log('> ', result)
+    return JSON.parse(result)
   }
 
   // Artifacts
@@ -375,7 +390,11 @@ function mod (githubContext, githubToken) {
       name: check.name,
       status: check.status,
       conclusion: check.conclusion,
-      url: check.html_url
+      url: check.html_url,
+      startedAt: check.started_at,
+      completedAt: check.completed_at,
+      output: check.output,
+      id: check.id
     }))
   }
 
@@ -395,6 +414,22 @@ function mod (githubContext, githubToken) {
     return checks
   }
 
+  async function retryPullRequestCheck (id) {
+    await octokit.rest.checks.rerequestRun({
+      ...context.repo,
+      check_run_id: id
+    })
+  }
+
+  async function retryPullRequestChecks (number) {
+    // Rerun failed checks
+    const checks = await getPullRequestChecks(number)
+    const failed = checks.filter(check => check.conclusion === 'failure')
+    for (const check of failed) {
+      await retryPullRequestCheck(number, check.id)
+    }
+  }
+
   async function createPullRequest (title, body, fromBranch, intoBranch) {
     if (!intoBranch) {
       intoBranch = await getDefaultBranch()
@@ -412,6 +447,19 @@ function mod (githubContext, githubToken) {
     }
   }
 
+  function _createPullRequestCURL (title, body, fromBranch, intoBranch) {
+    const result = _sendRequestWithCURL(`https://api.github.com/repos/${context.repo.owner}/${context.repo.repo}/pulls`, JSON.stringify({
+      title,
+      body,
+      head: fromBranch,
+      base: intoBranch
+    }))
+    return {
+      number: result.number,
+      url: result.html_url
+    }
+  }
+
   async function createPullRequestReview (id, payload) {
     debug('createPullRequestReview', id, payload)
     await octokit.rest.pulls.createReview({
@@ -419,6 +467,17 @@ function mod (githubContext, githubToken) {
       pull_number: id,
       ...payload
     })
+  }
+
+  async function mergePullRequest (id, { method, title, message }) {
+    const pr = await octokit.rest.pulls.merge({
+      ...context.repo,
+      pull_number: id,
+      merge_method: method,
+      commit_title: title,
+      commit_message: message
+    })
+    return pr.data
   }
 
   async function addCommentReaction (commentId, reaction) {
@@ -479,6 +538,14 @@ function mod (githubContext, githubToken) {
       ref: branch || 'main',
       inputs
     })
+  }
+
+  // For debugging purposes, we can also send a workflow dispatch event using CURL
+  function _sendWorkflowDispatchCURL ({ owner, repo, branch, workflow, inputs }) {
+    return _sendRequestWithCURL(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflow}/dispatches`, JSON.stringify({
+      ref: branch || 'main',
+      inputs
+    }))
   }
 
   function onRepoComment (fn) {
@@ -612,6 +679,8 @@ function mod (githubContext, githubToken) {
     getPullRequest,
     getPullRequestChecks,
     waitForPullRequestChecks,
+    retryPullRequestCheck,
+    retryPullRequestChecks,
 
     getDiffForPR,
     getDiffForCommit,
@@ -622,6 +691,8 @@ function mod (githubContext, githubToken) {
     updatePull,
     createPullRequest,
     createPullRequestReview,
+
+    mergePullRequest,
 
     close,
     comment,
@@ -637,7 +708,10 @@ function mod (githubContext, githubToken) {
     repoURL,
 
     checkRepoExists,
-    using
+    using,
+
+    _createPullRequestCURL,
+    _sendWorkflowDispatchCURL
   }
 }
 module.exports = mod
