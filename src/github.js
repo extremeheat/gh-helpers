@@ -54,7 +54,7 @@ function mod (githubContext, githubToken) {
     const cmd = `curl -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${token}" -d '${escapedPayload}' ${url}`
     const result = exec(cmd)
     console.log('> ', result)
-    return JSON.parse(result)
+    return (result.startsWith('{') || result.startsWith('[')) ? JSON.parse(result) : {}
   }
 
   // Artifacts
