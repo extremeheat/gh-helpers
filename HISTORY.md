@@ -1,6 +1,5 @@
 ## 0.3.2
 * [Update github.js fix no token handling on Github actions](https://github.com/extremeheat/gh-helpers/commit/79a7770eb8297748460c8d0d5125de19cce1662a) (thanks @extremeheat)
-* [Update github.js _sendRequestWithCURL json response handling](https://github.com/extremeheat/gh-helpers/commit/c0ccfa037eab4d3d3beecb222dfe20689c16259c) (thanks @extremeheat)
 
 ## 0.3.1
 * [Add mergePullRequest method (#23)](https://github.com/extremeheat/gh-helpers/commit/2d00e80ee3fcc7926df2809e41b567690a67d68a) (thanks @extremeheat)
