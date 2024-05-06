@@ -13,7 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/extremeheat/gh-helpers.git"
   },
-  "keywords": [],
+  "keywords": ["github", "api", "actions"],
   "author": "extremeheat",
   "license": "MIT",
   "bugs": {

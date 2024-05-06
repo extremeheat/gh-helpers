@@ -112,6 +112,8 @@ const mock = {
 
   sendWorkflowDispatch: noop,
 
+  getUserRepoPermissions: () => ({ write: true, read: true }),
+
   onRepoComment: noop,
   onUpdatedPR: noop,
   onWorkflowDispatch: noop,

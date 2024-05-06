@@ -533,6 +533,18 @@ function mod (githubContext, githubToken) {
     }))
   }
 
+  async function getUserRepoPermissions (username) {
+    // > Checks the repository permission of a collaborator. The possible repository permissions are admin, write, read, and none.
+    const { data } = await octokit.rest.repos.getCollaboratorPermissionLevel({
+      ...context.repo,
+      username
+    })
+    return {
+      read: data.permission !== 'none',
+      write: data.permission === 'write' || data.permission === 'admin'
+    }
+  }
+
   // Send a workflow dispatch event to a repository in the specified owner
   function sendWorkflowDispatch ({ owner, repo, branch, workflow, inputs }) {
     return octokit.rest.actions.createWorkflowDispatch({
@@ -703,6 +715,8 @@ function mod (githubContext, githubToken) {
     updateComment,
     addCommentReaction,
     getRecentCommitsInRepo,
+
+    getUserRepoPermissions,
 
     sendWorkflowDispatch,
 

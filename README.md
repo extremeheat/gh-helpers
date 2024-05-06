@@ -22,6 +22,12 @@ const github = require('gh-helpers')({
 }, GITHUB_PAT)
 ```
 
+To switch to running in the context of another repo,
+```js
+const altGithub = github.using({ owner: 'node', repository: 'nodejs' })
+altGithub.getRecentCommitsInRepo(20).then(console.log)
+```
+
 ### API
 
 See [src/index.d.ts](src/index.d.ts) for info on the API
