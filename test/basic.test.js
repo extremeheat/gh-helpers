@@ -54,9 +54,11 @@ describe('basic usage', () => {
     const perms = await github.getUserRepoPermissions('extremeheat')
     assert.strictEqual(perms.read, true)
     assert.strictEqual(perms.write, true)
+    console.log('Perms for extremeheat', perms)
 
     const negative = await github.getUserRepoPermissions('bob')
     assert.strictEqual(negative.read, true)
     assert.strictEqual(negative.write, false)
+    console.log('Negative perms for bob', perms)
   })
 })
