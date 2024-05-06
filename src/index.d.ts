@@ -140,6 +140,9 @@ interface GithubHelper {
   getDiffForPR(id: number): Promise<{ diff: string, title: string }>
   getDiffForCommit(hash: string): Promise<{ diff: string, url: string }>
 
+  // Checks and returns if the specified username has read and write permissions on the current repo
+  getUserRepoPermissions(username: string): Promise<{ read: boolean, write: boolean }>
+
   // Sends a workflow dispatch request to the specified owner/repo's $workflow.yml file, with the specified inputs
   sendWorkflowDispatch(arg: { owner?: string, repo?: string, workflow: string, branch: string, inputs: Record<string, string> }): Promise<unknown>
 

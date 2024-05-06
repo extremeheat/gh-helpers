@@ -49,4 +49,14 @@ describe('basic usage', () => {
     console.log('Read Artifact', downloaded)
     assert(downloaded.fileA.includes('world'))
   }).timeout(9000)
+
+  ;(github.mock ? it.skip : it)('permissions check', async function () {
+    const perms = await github.getUserRepoPermissions('extremeheat')
+    assert.strictEqual(perms.read, true)
+    assert.strictEqual(perms.write, true)
+
+    const negative = await github.getUserRepoPermissions('bob')
+    assert.strictEqual(negative.read, true)
+    assert.strictEqual(negative.write, false)
+  })
 })
