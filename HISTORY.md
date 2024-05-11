@@ -1,3 +1,7 @@
+## 0.3.3
+* [Add `collectIssuesInRepo()` method to collect all issues in repo (#28)](https://github.com/extremeheat/gh-helpers/commit/b5014e55f09077001b6a2363ff49f95548bce0b6) (thanks @extremeheat)
+* [Add a getUserRepoPermissions method to check user's write perms (#27)](https://github.com/extremeheat/gh-helpers/commit/6c411964dd196c921d81991d8b55a50d1ebde96a) (thanks @extremeheat)
+
 ## 0.3.2
 * [Update github.js fix no token handling on Github actions](https://github.com/extremeheat/gh-helpers/commit/79a7770eb8297748460c8d0d5125de19cce1662a) (thanks @extremeheat)
 
