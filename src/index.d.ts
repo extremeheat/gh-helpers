@@ -136,6 +136,7 @@ interface GithubHelper {
 
   addCommentReaction(commentId: number, reaction: string): Promise<void>;
   getRecentCommitsInRepo(max?: number): Promise<any[]>;
+  collectIssuesInRepo(): Promise<IssuePRDetail[]>
 
   getDiffForPR(id: number): Promise<{ diff: string, title: string }>
   getDiffForCommit(hash: string): Promise<{ diff: string, url: string }>

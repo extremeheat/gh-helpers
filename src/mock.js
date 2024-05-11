@@ -109,6 +109,7 @@ const mock = {
   getDiffForCommit: () => ({ diff: '', title: '', number: 0 }),
   getDiffForPR: () => ({ diff: '', url: '' }),
   getRecentCommitsInRepo,
+  collectIssuesInRepo: () => [],
 
   sendWorkflowDispatch: noop,
 

@@ -533,6 +533,26 @@ function mod (githubContext, githubToken) {
     }))
   }
 
+  // Return all the issues in the repository (like findIssues), handling pagination
+  async function collectIssuesInRepo () {
+    const issues = await octokit.paginate(octokit.rest.issues.listForRepo, {
+      ...context.repo,
+      state: 'all'
+    })
+    return issues.map(issue => ({
+      state: issue.state,
+      id: issue.number,
+      number: issue.number,
+      title: issue.title,
+      url: issue.html_url,
+      author: issue.user.login,
+      body: issue.body,
+      created: issue.created_at,
+      isOpen: issue.state === 'open',
+      isClosed: issue.state === 'closed'
+    }))
+  }
+
   async function getUserRepoPermissions (username) {
     // > Checks the repository permission of a collaborator. The possible repository permissions are admin, write, read, and none.
     const { data } = await octokit.rest.repos.getCollaboratorPermissionLevel({
@@ -715,6 +735,7 @@ function mod (githubContext, githubToken) {
     updateComment,
     addCommentReaction,
     getRecentCommitsInRepo,
+    collectIssuesInRepo,
 
     getUserRepoPermissions,
 
