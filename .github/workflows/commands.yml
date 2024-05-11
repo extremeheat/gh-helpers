@@ -12,8 +12,6 @@ jobs:
     steps:
     - name: Check out repository
       uses: actions/checkout@v3
-    - name: Dump context
-      uses: crazy-max/ghaction-dump-context@v2
     - name: Run command handlers
       uses: extremeheat/prismarine-repo-actions@master
       with:
