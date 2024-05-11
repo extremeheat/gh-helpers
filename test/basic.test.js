@@ -23,6 +23,11 @@ describe('basic usage', () => {
     console.log('PR Checks for #16', checks)
   })
 
+  it('issue collection', async function () {
+    const issues = await github.collectIssuesInRepo()
+    console.log('Issues in repo', issues)
+  })
+
   it('listing artifacts', async function () {
     const artifacts = await github.artifacts.list()
     console.log('List of Artifacts on Repo', artifacts)

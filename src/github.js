@@ -533,6 +533,27 @@ function mod (githubContext, githubToken) {
     }))
   }
 
+  // Return all the issues in the repository (like findIssues), handling pagination
+  async function collectIssuesInRepo (includePullRequests = false) {
+    const issues = await octokit.paginate(octokit.rest.issues.listForRepo, {
+      ...context.repo,
+      state: 'all'
+    })
+    return issues.map(issue => ({
+      state: issue.state,
+      type: issue.pull_request ? 'pull' : 'issue',
+      id: issue.number,
+      number: issue.number,
+      title: issue.title,
+      url: issue.html_url,
+      author: issue.user.login,
+      body: issue.body,
+      created: issue.created_at,
+      isOpen: issue.state === 'open',
+      isClosed: issue.state === 'closed'
+    })).filter(issue => includePullRequests || issue.type === 'issue')
+  }
+
   async function getUserRepoPermissions (username) {
     // > Checks the repository permission of a collaborator. The possible repository permissions are admin, write, read, and none.
     const { data } = await octokit.rest.repos.getCollaboratorPermissionLevel({
@@ -590,8 +611,7 @@ function mod (githubContext, githubToken) {
           // Helpful checks
           isClosed: payload.issue.state === 'closed',
           isOpen: payload.issue.state === 'open',
-          isMerged: payload.issue.pull_request?.merged,
-          isMergeable: payload.issue.pull_request?.mergeable
+          isMerged: payload.issue.pull_request?.merged_at
         }
       }, payload)
     }
@@ -715,6 +735,7 @@ function mod (githubContext, githubToken) {
     updateComment,
     addCommentReaction,
     getRecentCommitsInRepo,
+    collectIssuesInRepo,
 
     getUserRepoPermissions,
 
