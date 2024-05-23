@@ -372,6 +372,7 @@ function mod (githubContext, githubToken) {
       headBranch: data.head.ref,
       headRepo: data.head.repo.full_name,
       headCloneURL: data.head.repo.clone_url,
+      getHeadClonePatURL: (pat = token) => data.head.repo.clone_url.replace('https://', `https://${pat}@`),
       title: data.title,
       body: data.body,
       state: data.state,

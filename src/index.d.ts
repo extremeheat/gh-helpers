@@ -25,6 +25,8 @@ type FullPRData = {
   created: string;
   url: string;
   comments?: Comment[]
+  // Returns a clone URL using the current or user-specified PAT
+  getHeadClonePatURL(pat?: string): string;
 };
 
 type IssuePRLookupOpts = { titleIncludes?: string, author?: string, status?: string, number?: number }
