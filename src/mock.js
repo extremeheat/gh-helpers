@@ -14,7 +14,8 @@ const getPullRequest = () => ({
   targetRepo: 'target-repo',
   headBranch: 'head',
   headRepo: 'head-repo',
-  headCloneURL: 'clone-url'
+  headCloneURL: 'clone-url',
+  getHeadClonePatURL: () => 'clone-url'
 })
 const getRecentCommitsInRepo = () => [
   {
