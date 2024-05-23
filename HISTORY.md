@@ -1,3 +1,6 @@
+## 0.3.5
+* [Update mock.js](https://github.com/extremeheat/gh-helpers/commit/5e1cd7cccae517a6ebbd57d6099cece531ce5d65) (thanks @extremeheat)
+
 ## 0.3.4
 * [Add a getHeadClonePatURL to getPullRequest](https://github.com/extremeheat/gh-helpers/commit/a0a494c5bdff2cc109d61207d84b611302453464) (thanks @extremeheat)
 
