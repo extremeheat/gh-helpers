@@ -1,5 +1,5 @@
 ## 0.3.4
-* [Add a getHeadClonePatURL to getPullRequest](https://github.com/extremeheat/gh-helpers/commit/a0a494c5bdff2cc109d61207d84b611302453464) (thanks @extremeheat)
+* [Add a getHeadClonePatURL to getPullRequest](https://github.com/extremeheat/gh-helpers/commit/a0a494c5bdff2cc109d61207d84b611302453464) (thanks @extremeheat)
 
 ## 0.3.3
 * [Add `collectIssuesInRepo()` method to collect all issues in repo (#28)](https://github.com/extremeheat/gh-helpers/commit/b5014e55f09077001b6a2363ff49f95548bce0b6) (thanks @extremeheat)
