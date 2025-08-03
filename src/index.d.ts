@@ -98,7 +98,7 @@ declare module "gh-helpers" {
     getIssue(id: number): Promise<IssuePRDetail>
   
     updateIssue(id: number, payload: { body: string }): Promise<void>;
-    createIssue(payload: object): Promise<void>;
+    createIssue(payload: object): Promise<{ number: number, url: string }>;
   
     findPullRequests(options: IssuePRLookupOpts): Promise<IssuePRDetail[]>;
     findPullRequest(options: IssuePRLookupOpts): Promise<IssuePRDetail>;
