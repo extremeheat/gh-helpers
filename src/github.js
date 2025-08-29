@@ -4,6 +4,10 @@ const github = require('@actions/github')
 const core = require('@actions/core')
 const { DefaultArtifactClient } = require('@actions/artifact')
 const cp = require('child_process')
+
+const { Readable } = require('stream')
+const unzipper = require('unzipper')
+
 function exec (cmd) {
   console.log('$ ', cmd)
   // inherit stderr, capture stdout
@@ -80,16 +84,46 @@ function mod (githubContext, githubToken) {
   }
 
   async function downloadArtifactId (id, path) {
-    return await artifact.downloadArtifact(id, { path })
+    return await downloadArtifactIdFrom(context.repo.owner, context.repo.repo, id, path)
   }
 
   async function downloadArtifactIdFrom (owner, repo, id, path) {
-    return await artifact.downloadArtifact(id, {
-      token,
-      repositoryOwner: owner,
-      repositoryName: repo,
-      path
+    const url = `https://api.github.com/repos/${owner}/${repo}/actions/artifacts/${id}/zip`
+
+    // Ensure the directory exists
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path, { recursive: true })
+    }
+
+    const res = await fetch(url, {
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `Bearer ${token}`,
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
     })
+
+    if (!res.ok) {
+      console.error('Failed to download artifact:', res.status, res.statusText)
+      const errorText = await res.text()
+      console.error(errorText)
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`)
+    }
+
+    try {
+      await new Promise((resolve, reject) => {
+        Readable.fromWeb(res.body)
+          .pipe(unzipper.Extract({ path }))
+          .on('close', resolve)
+          .on('error', reject)
+      })
+
+      const extractedFiles = fs.readdirSync(path)
+      return { success: true, path, extractedFiles }
+    } catch (error) {
+      console.error('Failed to extract artifact:', error.message)
+      throw error
+    }
   }
 
   async function _readTextArtifact (id, owner, repo) {
