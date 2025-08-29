@@ -1,3 +1,8 @@
+## 1.0.0
+* [downloadArtifactIdFrom/downloadArtifactId use REST API directly](https://github.com/extremeheat/gh-helpers/commit/466985478bb6a117a78386610a571c59a280ea21) (thanks @extremeheat)
+* [Update index.d.ts](https://github.com/extremeheat/gh-helpers/commit/051e7469196c0edfd3247e7fc28d98b7dc9cbec7) (thanks @extremeheat)
+* [Update index.d.ts](https://github.com/extremeheat/gh-helpers/commit/2d669f546ab1d8d7a342be290ef04294b3ddc652) (thanks @extremeheat)
+
 ## 0.3.5
 * [Update mock.js](https://github.com/extremeheat/gh-helpers/commit/5e1cd7cccae517a6ebbd57d6099cece531ce5d65) (thanks @extremeheat)
 
