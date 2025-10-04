@@ -4,6 +4,7 @@ const github = require('@actions/github')
 const core = require('@actions/core')
 const { DefaultArtifactClient } = require('@actions/artifact')
 const cp = require('child_process')
+const { join } = require('path')
 
 const { Readable } = require('stream')
 const unzipper = require('unzipper')
@@ -127,7 +128,7 @@ function mod (githubContext, githubToken) {
   }
 
   async function _readTextArtifact (id, owner, repo) {
-    const tempFolder = __dirname + '/atemp-' + Date.now() // eslint-disable-line
+    const tempFolder = join(__dirname, '/atemp-' + Date.now())
     if (owner) {
       await downloadArtifactIdFrom(owner, repo, id, tempFolder)
     } else {
@@ -150,7 +151,7 @@ function mod (githubContext, githubToken) {
   }
 
   async function createTextArtifact (name, fileContents, options) {
-    const tempFolder = __dirname + '/atemp-' + Date.now() // eslint-disable-line
+    const tempFolder = join(__dirname, '/atemp-' + Date.now())
     fs.mkdirSync(tempFolder, { recursive: true })
     const filePaths = []
     for (const file in fileContents) {
@@ -715,6 +716,32 @@ function mod (githubContext, githubToken) {
     }
   }
 
+  function createAgent (prompt, branch) {
+    const tempFile = join(__dirname, `/__agent-task-${Date.now()}.md`)
+    try {
+      // Write prompt to temporary file
+      fs.writeFileSync(tempFile, prompt)
+
+      // Build the gh command
+      const repoArg = `-R ${context.repo.owner}/${context.repo.repo}`
+      const branchArg = branch ? `--branch ${branch}` : ''
+      const cmd = `gh agent-task create ${repoArg} -F ${tempFile} ${branchArg}`.trim()
+
+      // Execute with GH_TOKEN in environment
+      const result = cp.execSync(cmd, {
+        stdio: ['inherit', 'pipe', 'inherit'],
+        env: { ...process.env, GH_TOKEN: token }
+      }).toString()
+
+      return result
+    } finally {
+      // Clean up temp file
+      if (fs.existsSync(tempFile)) {
+        fs.unlinkSync(tempFile)
+      }
+    }
+  }
+
   const repoURL = context.payload?.repository.html_url ?? `https://github.com/${context.repo.owner}/${context.repo.repo}`
 
   function using ({ owner = context.repo.owner, repo }) {
@@ -783,6 +810,8 @@ function mod (githubContext, githubToken) {
 
     checkRepoExists,
     using,
+
+    createAgent,
 
     _createPullRequestCURL,
     _sendWorkflowDispatchCURL
