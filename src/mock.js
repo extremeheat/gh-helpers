@@ -122,6 +122,8 @@ const mock = {
   repoURL: 'https://github.com/' + process.env.GITHUB_REPOSITORY,
 
   checkRepoExists: () => true,
-  using: () => mock
+  using: () => mock,
+
+  createAgent: noop
 }
 module.exports = () => mock

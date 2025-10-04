@@ -155,6 +155,9 @@ declare module "gh-helpers" {
     checkRepoExists(id: [owner: string, repo: string]): Promise<boolean>
     checkRepoExists(id: { owner: string, repo: string }): Promise<boolean>
   
+    // Create a GitHub Copilot Agent task with the given prompt and optional branch
+    createAgent(prompt: string, branch?: string): string
+  
     // Events
     onRepoComment(fn: (payload: HookOnRepoCommentPayload, rawPayload: any) => void): void;
     onUpdatedPR(fn: (payload: HookOnUpdatedPRPayload) => void, rawPayload: any): void;

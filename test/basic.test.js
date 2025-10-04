@@ -66,4 +66,9 @@ describe('basic usage', () => {
     assert.strictEqual(negative.write, false)
     console.log('Negative perms for bob', perms)
   })
+
+  it('createAgent API exists', function () {
+    assert(typeof github.createAgent === 'function')
+    console.log('createAgent API is available')
+  })
 })

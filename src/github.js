@@ -715,6 +715,32 @@ function mod (githubContext, githubToken) {
     }
   }
 
+  function createAgent (prompt, branch) {
+    const tempFile = `/tmp/agent-task-${Date.now()}.md`
+    try {
+      // Write prompt to temporary file
+      fs.writeFileSync(tempFile, prompt)
+
+      // Build the gh command
+      const repoArg = `-R ${context.repo.owner}/${context.repo.repo}`
+      const branchArg = branch ? `--branch ${branch}` : ''
+      const cmd = `gh agent-task create ${repoArg} -F ${tempFile} ${branchArg}`.trim()
+
+      // Execute with GH_TOKEN in environment
+      const result = cp.execSync(cmd, {
+        stdio: ['inherit', 'pipe', 'inherit'],
+        env: { ...process.env, GH_TOKEN: token }
+      }).toString()
+
+      return result
+    } finally {
+      // Clean up temp file
+      if (fs.existsSync(tempFile)) {
+        fs.unlinkSync(tempFile)
+      }
+    }
+  }
+
   const repoURL = context.payload?.repository.html_url ?? `https://github.com/${context.repo.owner}/${context.repo.repo}`
 
   function using ({ owner = context.repo.owner, repo }) {
@@ -783,6 +809,8 @@ function mod (githubContext, githubToken) {
 
     checkRepoExists,
     using,
+
+    createAgent,
 
     _createPullRequestCURL,
     _sendWorkflowDispatchCURL
