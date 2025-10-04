@@ -716,7 +716,7 @@ function mod (githubContext, githubToken) {
   }
 
   function createAgent (prompt, branch) {
-    const tempFile = `/tmp/agent-task-${Date.now()}.md`
+    const tempFile = __dirname + `/__agent-task-${Date.now()}.md`
     try {
       // Write prompt to temporary file
       fs.writeFileSync(tempFile, prompt)
