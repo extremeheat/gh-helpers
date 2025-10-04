@@ -1,3 +1,6 @@
+## 1.1.0
+* [Add createAgent API to create GitHub Copilot Agent tasks (#38)](https://github.com/extremeheat/gh-helpers/commit/e9a3af948933e7672d01bd569a0f82fefd041875) (thanks @Copilot)
+
 ## 1.0.0
 * [downloadArtifactIdFrom/downloadArtifactId use REST API directly](https://github.com/extremeheat/gh-helpers/commit/466985478bb6a117a78386610a571c59a280ea21) (thanks @extremeheat)
 * [Update index.d.ts](https://github.com/extremeheat/gh-helpers/commit/051e7469196c0edfd3247e7fc28d98b7dc9cbec7) (thanks @extremeheat)
