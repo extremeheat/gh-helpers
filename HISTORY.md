@@ -1,3 +1,7 @@
+## 1.2.0
+* Breaking: createAgent is now async
+* [Swap GH CLI for MCP server in createAgent (#40) (#41)](https://github.com/extremeheat/gh-helpers/commit/ac01ceef3012e273896f09e9bde82e463255288c) (thanks @Copilot)
+
 ## 1.1.0
 * [Add createAgent API to create GitHub Copilot Agent tasks (#38)](https://github.com/extremeheat/gh-helpers/commit/e9a3af948933e7672d01bd569a0f82fefd041875) (thanks @Copilot)
 
