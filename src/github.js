@@ -8,6 +8,7 @@ const { join } = require('path')
 
 const { Readable } = require('stream')
 const unzipper = require('unzipper')
+const { MCPClient } = require('mcp-client')
 
 function exec (cmd) {
   console.log('$ ', cmd)
@@ -743,44 +744,41 @@ function mod (githubContext, githubToken) {
     }
   }
 
+  // Lazy initialization of MCP client
+  let mcpClient = null
+  async function getMCPClient () {
+    if (mcpClient) return mcpClient
+
+    const client = new MCPClient({
+      name: 'gh-helpers',
+      version: '1.2.0'
+    })
+
+    await client.connect({
+      type: 'sse',
+      url: `https://api.githubcopilot.com/mcp/?authorization=Bearer%20${encodeURIComponent(token)}`
+    })
+
+    mcpClient = client
+    return mcpClient
+  }
+
   // Create a GitHub Copilot Agent task using MCP server
   async function createAgent (prompt, branch, title) {
-    try {
-      const { McpClient, transports } = require('mcp-client')
+    const client = await getMCPClient()
 
-      const client = new McpClient({
-        transport: new transports.HttpTransport({
-          url: 'https://api.githubcopilot.com/mcp/',
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
-      })
+    const result = await client.callTool({
+      name: 'create_pull_request_with_copilot',
+      arguments: {
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        problem_statement: prompt,
+        title: title || 'Copilot Agent Task',
+        base_ref: branch
+      }
+    })
 
-      // Initialize the MCP client
-      await client.initialize({
-        protocolVersion: '2025-03-26',
-        capabilities: { roots: { listChanged: true }, sampling: {} },
-        clientInfo: { name: 'gh-helpers', version: '1.2.0' }
-      })
-
-      // Call the create_pull_request_with_copilot tool
-      const result = await client.call('tools/call', {
-        name: 'create_pull_request_with_copilot',
-        arguments: {
-          owner: context.repo.owner,
-          repo: context.repo.repo,
-          problem_statement: prompt,
-          title: title || 'Copilot Agent Task',
-          base_ref: branch
-        }
-      })
-
-      return result
-    } catch (error) {
-      debug('MCP client error:', error)
-      throw error
-    }
+    return result
   }
 
   const repoURL = context.payload?.repository.html_url ?? `https://github.com/${context.repo.owner}/${context.repo.repo}`
