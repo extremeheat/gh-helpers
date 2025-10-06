@@ -1,5 +1,5 @@
 ## 1.2.0
-* [Bump mocha from 10.8.2 to 11.1.0 (#35)](https://github.com/extremeheat/gh-helpers/commit/4bb86e410b122f969dc557b1a7b663a67908d8ec) (thanks @dependabot[bot])
+* Breaking: createAgent is now async
 * [Swap GH CLI for MCP server in createAgent (#40) (#41)](https://github.com/extremeheat/gh-helpers/commit/ac01ceef3012e273896f09e9bde82e463255288c) (thanks @Copilot)
 
 ## 1.1.0
