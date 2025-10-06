@@ -5,6 +5,7 @@ Breaking:
   * Breaking: createAgent now uses GitHub MCP server instead of GH CLI
   * Added: _createAgentCli as legacy CLI-based method for backwards compatibility
   * Added: third parameter `title` to createAgent for PR title customization
+  * Implementation: Uses raw HTTP with JSON-RPC to communicate with MCP server (no external dependencies)
 
 ## 1.1.0
 * [Add createAgent API to create GitHub Copilot Agent tasks (#38)](https://github.com/extremeheat/gh-helpers/commit/e9a3af948933e7672d01bd569a0f82fefd041875) (thanks @Copilot)

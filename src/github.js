@@ -8,7 +8,6 @@ const { join } = require('path')
 
 const { Readable } = require('stream')
 const unzipper = require('unzipper')
-const { MCPClient } = require('mcp-client')
 
 function exec (cmd) {
   console.log('$ ', cmd)
@@ -744,40 +743,67 @@ function mod (githubContext, githubToken) {
     }
   }
 
-  // Lazy initialization of MCP client
-  let mcpClient = null
-  async function getMCPClient () {
-    if (mcpClient) return mcpClient
-
-    const client = new MCPClient({
-      name: 'gh-helpers',
-      version: '1.2.0'
-    })
-
-    await client.connect({
-      type: 'sse',
-      url: `https://api.githubcopilot.com/mcp/?authorization=Bearer%20${encodeURIComponent(token)}`
-    })
-
-    mcpClient = client
-    return mcpClient
-  }
-
-  // Create a GitHub Copilot Agent task using MCP server
+  // Create a GitHub Copilot Agent task using MCP server via raw HTTP
   async function createAgent (prompt, branch, title) {
-    const client = await getMCPClient()
+    const mcpEndpoint = 'https://api.githubcopilot.com/mcp/'
 
-    const result = await client.callTool({
-      name: 'create_pull_request_with_copilot',
-      arguments: {
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-        problem_statement: prompt,
-        title: title || 'Copilot Agent Task',
-        base_ref: branch
-      }
+    // Initialize MCP session
+    const initResponse = await fetch(mcpEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'initialize',
+        params: {
+          protocolVersion: '2024-11-05',
+          capabilities: {},
+          clientInfo: {
+            name: 'gh-helpers',
+            version: '1.2.0'
+          }
+        }
+      })
     })
 
+    if (!initResponse.ok) {
+      throw new Error(`MCP initialization failed: ${initResponse.status} ${initResponse.statusText}`)
+    }
+
+    await initResponse.json()
+
+    // Call the create_pull_request_with_copilot tool
+    const toolResponse = await fetch(mcpEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 2,
+        method: 'tools/call',
+        params: {
+          name: 'create_pull_request_with_copilot',
+          arguments: {
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            problem_statement: prompt,
+            title: title || 'Copilot Agent Task',
+            base_ref: branch
+          }
+        }
+      })
+    })
+
+    if (!toolResponse.ok) {
+      throw new Error(`MCP tool call failed: ${toolResponse.status} ${toolResponse.statusText}`)
+    }
+
+    const result = await toolResponse.json()
     return result
   }
 
