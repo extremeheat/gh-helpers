@@ -800,6 +800,7 @@ function mod (githubContext, githubToken) {
     })
 
     if (!toolResponse.ok) {
+      console.log(toolResponse, await toolResponse.text())
       throw new Error(`MCP tool call failed: ${toolResponse.status} ${toolResponse.statusText}`)
     }
 
