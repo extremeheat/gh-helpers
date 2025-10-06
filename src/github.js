@@ -716,7 +716,8 @@ function mod (githubContext, githubToken) {
     }
   }
 
-  function createAgent (prompt, branch) {
+  // Legacy CLI-based agent creation (kept for backwards compatibility)
+  function _createAgentCli (prompt, branch) {
     const tempFile = join(__dirname, `/__agent-task-${Date.now()}.md`)
     try {
       // Write prompt to temporary file
@@ -740,6 +741,70 @@ function mod (githubContext, githubToken) {
         fs.unlinkSync(tempFile)
       }
     }
+  }
+
+  // Create a GitHub Copilot Agent task using MCP server via raw HTTP
+  async function createAgent (prompt, branch, title) {
+    const mcpEndpoint = 'https://api.githubcopilot.com/mcp/'
+
+    // Initialize MCP session
+    const initResponse = await fetch(mcpEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'initialize',
+        params: {
+          protocolVersion: '2024-11-05',
+          capabilities: {},
+          clientInfo: {
+            name: 'gh-helpers',
+            version: '1.2.0'
+          }
+        }
+      })
+    })
+
+    if (!initResponse.ok) {
+      throw new Error(`MCP initialization failed: ${initResponse.status} ${initResponse.statusText}`)
+    }
+
+    await initResponse.json()
+
+    // Call the create_pull_request_with_copilot tool
+    const toolResponse = await fetch(mcpEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 2,
+        method: 'tools/call',
+        params: {
+          name: 'create_pull_request_with_copilot',
+          arguments: {
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            problem_statement: prompt,
+            title: title || 'Copilot Agent Task',
+            base_ref: branch
+          }
+        }
+      })
+    })
+
+    if (!toolResponse.ok) {
+      throw new Error(`MCP tool call failed: ${toolResponse.status} ${toolResponse.statusText}`)
+    }
+
+    const result = await toolResponse.json()
+    return result
   }
 
   const repoURL = context.payload?.repository.html_url ?? `https://github.com/${context.repo.owner}/${context.repo.repo}`
@@ -812,6 +877,7 @@ function mod (githubContext, githubToken) {
     using,
 
     createAgent,
+    _createAgentCli,
 
     _createPullRequestCURL,
     _sendWorkflowDispatchCURL

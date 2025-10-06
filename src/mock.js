@@ -124,6 +124,7 @@ const mock = {
   checkRepoExists: () => true,
   using: () => mock,
 
-  createAgent: noop
+  createAgent: noop,
+  _createAgentCli: noop
 }
 module.exports = () => mock

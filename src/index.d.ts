@@ -155,8 +155,11 @@ declare module "gh-helpers" {
     checkRepoExists(id: [owner: string, repo: string]): Promise<boolean>
     checkRepoExists(id: { owner: string, repo: string }): Promise<boolean>
   
-    // Create a GitHub Copilot Agent task with the given prompt and optional branch
-    createAgent(prompt: string, branch?: string): string
+    // Create a GitHub Copilot Agent task using MCP server with the given prompt, optional branch, and PR title
+    createAgent(prompt: string, branch?: string, title?: string): Promise<unknown>
+    
+    // Legacy CLI-based agent creation (kept for backwards compatibility)
+    _createAgentCli(prompt: string, branch?: string): string
   
     // Events
     onRepoComment(fn: (payload: HookOnRepoCommentPayload, rawPayload: any) => void): void;
