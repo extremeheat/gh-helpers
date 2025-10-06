@@ -746,45 +746,58 @@ function mod (githubContext, githubToken) {
   // Create a GitHub Copilot Agent task using MCP server via raw HTTP
   async function createAgent (prompt, branch, title) {
     const mcpEndpoint = 'https://api.githubcopilot.com/mcp/'
+    const baseHeaders = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json, text/event-stream',
+      Authorization: `Bearer ${token}`
+    }
 
-    // Initialize MCP session
+    // 1) initialize
     const initResponse = await fetch(mcpEndpoint, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
+      headers: baseHeaders,
       body: JSON.stringify({
         jsonrpc: '2.0',
         id: 1,
         method: 'initialize',
         params: {
-          protocolVersion: '2024-11-05',
-          capabilities: {},
-          clientInfo: {
-            name: 'gh-helpers',
-            version: '1.2.0'
-          }
+          protocolVersion: '2025-03-26', // use a current spec date
+          capabilities: { roots: { listChanged: true }, sampling: {} },
+          clientInfo: { name: 'gh-helpers', version: '1.2.0' }
         }
       })
     })
+    if (!initResponse.ok) throw new Error(`init failed: ${initResponse.status} ${initResponse.statusText}`)
 
-    if (!initResponse.ok) {
-      throw new Error(`MCP initialization failed: ${initResponse.status} ${initResponse.statusText}`)
-    }
+    // IMPORTANT: capture session id and reuse it
+    const sessionId = initResponse.headers.get('mcp-session-id') || initResponse.headers.get('Mcp-Session-Id')
 
+    // Optionally parse result (not strictly needed here)
     await initResponse.json()
 
-    // Call the create_pull_request_with_copilot tool
+    // 2) notifications/initialized (no id; no result expected)
+    await fetch(mcpEndpoint, {
+      method: 'POST',
+      headers: { ...baseHeaders, 'Mcp-Session-Id': sessionId },
+      body: JSON.stringify({ jsonrpc: '2.0', method: 'notifications/initialized' })
+    })
+
+    // 3) (optional) discover tools first so you know the exact name/schema
+    const listRes = await fetch(mcpEndpoint, {
+      method: 'POST',
+      headers: { ...baseHeaders, 'Mcp-Session-Id': sessionId },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'tools/list', params: {} }),
+    })
+    const tools = await listRes.json()
+    console.log(tools)
+
+    // 4) call tool
     const toolResponse = await fetch(mcpEndpoint, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
+      headers: { ...baseHeaders, 'Mcp-Session-Id': sessionId },
       body: JSON.stringify({
         jsonrpc: '2.0',
-        id: 2,
+        id: 3,
         method: 'tools/call',
         params: {
           name: 'create_pull_request_with_copilot',
@@ -800,12 +813,12 @@ function mod (githubContext, githubToken) {
     })
 
     if (!toolResponse.ok) {
-      console.log(toolResponse, await toolResponse.text())
-      throw new Error(`MCP tool call failed: ${toolResponse.status} ${toolResponse.statusText}`)
+    // helpful for debugging spec-y errors
+      const text = await toolResponse.text()
+      throw new Error(`tool call failed: ${toolResponse.status} ${toolResponse.statusText} — ${text}`)
     }
 
-    const result = await toolResponse.json()
-    return result
+    return await toolResponse.json()
   }
 
   const repoURL = context.payload?.repository.html_url ?? `https://github.com/${context.repo.owner}/${context.repo.repo}`
