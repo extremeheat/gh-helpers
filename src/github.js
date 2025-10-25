@@ -786,7 +786,7 @@ function mod (githubContext, githubToken) {
     const listRes = await fetch(mcpEndpoint, {
       method: 'POST',
       headers: { ...baseHeaders, 'Mcp-Session-Id': sessionId },
-      body: JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'tools/list', params: {} }),
+      body: JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'tools/list', params: {} })
     })
     const tools = await listRes.json()
     console.log(tools)

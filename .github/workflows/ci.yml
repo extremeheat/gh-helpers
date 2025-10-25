@@ -20,6 +20,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Expose GitHub Runtime
       uses: crazy-max/ghaction-github-runtime@v3
+    - run: git subtree -h
     - run: npm install
     - run: npm test
       env:
