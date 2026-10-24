@@ -44,6 +44,20 @@ declare module "gh-helpers" {
     isClosed: boolean
   }
   
+  type PullRequestListOpts = {
+    state?: 'open' | 'closed' | 'all';
+    // GitHub's owner:branch syntax, e.g. PrismarineJS:bump
+    head?: string;
+    base?: string;
+  }
+  type ListedPullRequest = IssuePRDetail & {
+    headBranch: string;
+    // Null when the source repository was deleted.
+    headRepo: string | null;
+    targetBranch: string;
+    targetRepo: string;
+  }
+
   type PRCheck = {
     name: string,
     status: "queued" | "in_progress" | "completed",
@@ -100,6 +114,8 @@ declare module "gh-helpers" {
     updateIssue(id: number, payload: { body: string }): Promise<void>;
     createIssue(payload: object): Promise<{ number: number, url: string }>;
   
+    // Lists all matching PRs using the paginated REST pulls endpoint, without an author filter.
+    listPullRequests(options?: PullRequestListOpts): Promise<ListedPullRequest[]>;
     findPullRequests(options: IssuePRLookupOpts): Promise<IssuePRDetail[]>;
     findPullRequest(options: IssuePRLookupOpts): Promise<IssuePRDetail>;
   

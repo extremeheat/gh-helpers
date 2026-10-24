@@ -31,3 +31,18 @@ altGithub.getRecentCommitsInRepo(20).then(console.log)
 ### API
 
 See [src/index.d.ts](src/index.d.ts) for info on the API
+
+Use `listPullRequests` to read all matching PRs directly from the REST pulls
+endpoint. It follows pagination and includes PRs from every author, avoiding the
+search index used by `findPullRequests`:
+
+```js
+const pulls = await github.listPullRequests({
+  state: 'all', // Defaults to 'open'; also accepts 'closed'.
+  head: 'PrismarineJS:bump',
+  base: 'main'
+})
+```
+
+Results include the usual issue/PR fields plus `headBranch`, `headRepo`,
+`targetBranch`, and `targetRepo`. `headRepo` is null for a deleted source repository.
