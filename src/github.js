@@ -160,7 +160,7 @@ function mod (githubContext, githubToken) {
       filePaths.push(path)
     }
     const { id, size } = await uploadArtifact(name, filePaths, tempFolder, options)
-    fs.rmdirSync(tempFolder, { recursive: true })
+    fs.rmSync(tempFolder, { recursive: true })
     return { id, size }
   }
 
