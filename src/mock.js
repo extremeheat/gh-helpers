@@ -88,6 +88,7 @@ const mock = {
   updateIssue: noop,
   createIssue: noop,
 
+  listPullRequests: () => [],
   findPullRequests: () => [],
   findPullRequest: noop,
   getPullRequest,

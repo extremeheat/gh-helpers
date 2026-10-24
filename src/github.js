@@ -160,7 +160,7 @@ function mod (githubContext, githubToken) {
       filePaths.push(path)
     }
     const { id, size } = await uploadArtifact(name, filePaths, tempFolder, options)
-    fs.rmdirSync(tempFolder, { recursive: true })
+    fs.rmSync(tempFolder, { recursive: true })
     return { id, size }
   }
 
@@ -303,6 +303,34 @@ function mod (githubContext, githubToken) {
   if (context.payload) {
     // This was triggered by Github Actions
     getDefaultBranch().then(branch => debug('Default branch is', branch, 'current author is', currentAuthor))
+  }
+
+  // Read every page directly from the pulls API, without search-index delay or
+  // an implicit author filter. `head` uses GitHub's owner:branch syntax.
+  async function listPullRequests ({ state = 'open', head, base } = {}) {
+    const pulls = await octokit.paginate(octokit.rest.pulls.list, {
+      ...context.repo,
+      state,
+      head,
+      base,
+      per_page: 100
+    })
+    return pulls.map(pr => ({
+      state: pr.state,
+      id: pr.number,
+      number: pr.number,
+      title: pr.title,
+      url: pr.html_url,
+      author: pr.user.login,
+      body: pr.body || '',
+      created: pr.created_at,
+      isOpen: pr.state === 'open',
+      isClosed: pr.state === 'closed',
+      headBranch: pr.head.ref,
+      headRepo: pr.head.repo?.full_name || null,
+      targetBranch: pr.base.ref,
+      targetRepo: pr.base.repo.full_name
+    }))
   }
 
   async function findPullRequests ({
@@ -851,6 +879,7 @@ function mod (githubContext, githubToken) {
     getIssue,
     getComments,
 
+    listPullRequests,
     findPullRequests,
     findPullRequest,
     getPullRequest,
