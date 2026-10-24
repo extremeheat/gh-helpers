@@ -1,3 +1,6 @@
+## 1.3.0
+* [Add paginated pull request listing API (#58)](https://github.com/extremeheat/gh-helpers/commit/e316de36d75619a17f7ffe1d573fe78e8ffc3c81) (thanks @extremeheat)
+
 ## 1.2.0
 * Breaking: createAgent is now async
 * [Swap GH CLI for MCP server in createAgent (#40) (#41)](https://github.com/extremeheat/gh-helpers/commit/ac01ceef3012e273896f09e9bde82e463255288c) (thanks @Copilot)
