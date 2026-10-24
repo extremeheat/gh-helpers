@@ -1,3 +1,10 @@
+## 1.3.0
+* [feat: add paginated pull request listing (#58)](https://github.com/extremeheat/gh-helpers/commit/e316de36d75619a17f7ffe1d573fe78e8ffc3c81) (thanks @extremeheat)
+* [fix](https://github.com/extremeheat/gh-helpers/commit/f40281142768fb7574b918a1a1446143488ad674) (thanks @extremeheat)
+* [lint](https://github.com/extremeheat/gh-helpers/commit/4c3d0b41a1c60115f8d65354b218f5c91129e7c2) (thanks @extremeheat)
+* [Update github.js](https://github.com/extremeheat/gh-helpers/commit/52accbbb5d2cbe8a738179ef1af4340f3a0fd71b) (thanks @extremeheat)
+* [Add logging for failed toolResponse](https://github.com/extremeheat/gh-helpers/commit/82e1b320bc711ee471d72c75718b5a3a8adb7869) (thanks @extremeheat)
+
 ## 1.2.0
 * Breaking: createAgent is now async
 * [Swap GH CLI for MCP server in createAgent (#40) (#41)](https://github.com/extremeheat/gh-helpers/commit/ac01ceef3012e273896f09e9bde82e463255288c) (thanks @Copilot)
